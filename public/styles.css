@@ -1,0 +1,23 @@
+#chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#chat-messages {
+    list-style-type: none;
+    padding: 0;
+}
+
+#chat-messages li {
+    margin-bottom: 10px;
+}
+
+#message-input {
+    width: calc(100% - 80px);
+    margin-right: 10px;
+}
+
+#send-button {
+    width: 70px;
+}
