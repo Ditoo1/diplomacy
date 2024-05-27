@@ -1,23 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
 #chat-container {
-    max-width: 600px;
+    max-width: 400px;
     margin: 0 auto;
-    padding: 20px;
 }
 
-#chat-messages {
-    list-style-type: none;
-    padding: 0;
-}
-
-#chat-messages li {
+#chat-box {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
     margin-bottom: 10px;
 }
 
 #message-input {
-    width: calc(100% - 80px);
-    margin-right: 10px;
+    width: calc(100% - 70px);
+    padding: 5px;
 }
 
-#send-button {
-    width: 70px;
+button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
