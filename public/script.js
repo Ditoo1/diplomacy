@@ -1,10 +1,18 @@
 // public/script.js
 
-const socket = io({ query: { userId: 'ID_DE_USUARIO' } });
+const socket = io();
 
 const messages = document.getElementById('messages');
 const form = document.getElementById('message-form');
 const input = document.getElementById('message-input');
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // Evita la acción de envío por defecto del formulario
+    const message = input.value;
+    socket.emit('send message', message);
+    input.value = '';
+});
+
 
 // Cargar mensajes anteriores
 socket.on('load messages', (msgs) => {
