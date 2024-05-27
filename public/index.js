@@ -1,4 +1,4 @@
-var firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyC643BZysfS-TkAo5sUhmRREwE9MurGoD8",
     authDomain: "democracy-a62c1.firebaseapp.com",
     databaseURL: "https://democracy-a62c1-default-rtdb.firebaseio.com",
@@ -6,7 +6,7 @@ var firebaseConfig = {
     storageBucket: "democracy-a62c1.appspot.com",
     messagingSenderId: "1092075734405",
     appId: "1:1092075734405:web:f8c9320c60104acc8370ec"
-};
+  };
 
 firebase.initializeApp(firebaseConfig);
 
