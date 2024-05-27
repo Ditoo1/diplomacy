@@ -1,17 +1,14 @@
 {
   "name": "live-chat",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Chat en vivo con historial de mensajes",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "build": "npm install"
   },
-  "keywords": [],
-  "author": "",
+  "author": "TuNombre",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "express": "^4.19.2",
-    "firebase-admin": "^12.1.1",
-    "socket.io": "^4.7.5"
   }
 }
