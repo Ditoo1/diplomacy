@@ -44,16 +44,18 @@ const firebaseConfig = {
     });
   }
   
-  // display the messages
-  // reference the collection created earlier
-  const fetchChat = db.ref("messages/");
-  
-  // check for new messages using the onChildAdded event listener
-  fetchChat.on("child_added", function (snapshot) {
-    const messages = snapshot.val();
-    const message = `<li class=${
-      username === messages.username ? "sent" : "receive"
-    }><span>${messages.username}: </span>${messages.message}</li>`;
-    // append the message on the page
-    document.getElementById("messages").innerHTML += message;
-  });
+ // display the messages
+// reference the collection created earlier
+const fetchChat = db.ref("messages/");
+
+// check for new messages using the onChildAdded event listener
+fetchChat.on("child_added", function(snapshot) {
+  const messages = snapshot.val();
+  const message = `<li class=${username === messages.username ? "sent" : "receive"}><span>${messages.username}: </span>${messages.message}</li>`;
+  // append the message on the page
+  document.getElementById("messages").innerHTML += message;
+
+  // scroll to bottom
+  const messagesDiv = document.getElementById("messages");
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
