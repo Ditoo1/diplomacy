@@ -13,8 +13,20 @@ const firebaseConfig = {
   // initialize database
   const db = firebase.database();
   
-  // get user's data
-  const username = prompt("nombre chistosin");
+// get user's data
+let username = localStorage.getItem("username");
+if (!username) {
+  username = prompt("Por favor, introduce tu nombre chistosín:");
+  localStorage.setItem("username", username);
+}
+
+// Validar que el nombre no esté vacío
+while (!username.trim()) {
+  username = prompt("¡Ups! Parece que no ingresaste un nombre. Por favor, introduce tu nombre chistosín:");
+  localStorage.setItem("username", username);
+}
+
+
   
   // submit form
   // listen for submit event on the form and call the postChat function
