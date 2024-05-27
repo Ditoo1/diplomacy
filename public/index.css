@@ -35,7 +35,7 @@ header {
 }
 
 #messages li.sent {
-    background-color: #2979ff; /* Color de fondo de mensajes enviados */
+    background-color: #001a46; /* Color de fondo de mensajes enviados */
     color: #ffffff;
     align-self: flex-end;
 }
