@@ -1,5 +1,27 @@
 var loggedIn1 = false;
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDlsQG83ex1dYXtB3R2QBIJb9P8ETIJSw4",
+  authDomain: "democracy-38111.firebaseapp.com",
+  projectId: "democracy-38111",
+  storageBucket: "democracy-38111.appspot.com",
+  messagingSenderId: "984820517620",
+  appId: "1:984820517620:web:7480828e3e091524272ca1",
+  measurementId: "G-N8YW6X7J37"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 document.querySelectorAll(".user-input").forEach(function(textarea) {
   textarea.style.display = "none"; // Ocultar todas las áreas de entrada inicialmente
 });
@@ -41,27 +63,17 @@ function sendMessage(chatNumber) {
   var userInput = document.getElementById("userInput" + chatNumber);
   var message = userInput.value;
   if (message.trim() !== "") {
-    var messageDiv = document.createElement("div");
-    messageDiv.textContent = message;
-    messageDiv.classList.add("message", "outgoing");
-    
-    // Crear botón de eliminar
-    var deleteButton = document.createElement("button");
-    deleteButton.textContent = "Eliminar";
-    deleteButton.classList.add("delete-btn");
-    deleteButton.addEventListener("click", function() {
-      messageDiv.remove();
+    firebase.firestore().collection("chats").doc("chat" + chatNumber).collection("messages").add({
+      message: message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(function(docRef) {
+      console.log("Mensaje enviado con ID: ", docRef.id);
+      userInput.value = ""; // Limpiar el área de entrada después de enviar el mensaje
+    })
+    .catch(function(error) {
+      console.error("Error al enviar mensaje: ", error);
     });
-    
-    // Adjuntar el botón de eliminar al mensaje
-    messageDiv.appendChild(deleteButton);
-
-    document.getElementById("messageArea" + chatNumber).appendChild(messageDiv);
-    userInput.value = "";
-    document.getElementById("messageArea" + chatNumber).scrollTop = document.getElementById("messageArea" + chatNumber).scrollHeight;
   }
 }
 
-document.getElementById("sendBtn1").addEventListener("click", function() {
-  sendMessage(1);
-});
