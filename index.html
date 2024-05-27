@@ -3,25 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página de Login</title>
+  <title>Página Web Simple</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <div id="top-left" class="box"></div>
-    <div id="top-right" class="box"></div>
-    <div id="bottom-left" class="box"></div>
-    <button id="login-btn">Login</button>
-  </div>
-
-  <div id="login-modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <input type="password" id="password-input" placeholder="Contraseña">
-      <button id="submit-btn">Ingresar</button>
+    <div id="chatBox1" class="chat-box top-left">
+      <div class="chat-name">Sesla</div> <!-- Nombre del chat -->
+      <div id="messageArea1" class="message-area">
+        <!-- Eliminamos el mensaje de ejemplo -->
+      </div>
+      <textarea id="userInput1" class="user-input" placeholder="Escribe tu mensaje aquí..." readonly></textarea>
+      <button id="sendBtn1" class="send-btn" disabled>Enviar</button>
     </div>
+    <div id="chatBox2" class="chat-box top-right">
+      <div class="chat-name">Tesech</div> <!-- Nombre del chat -->
+      <div id="messageArea2" class="message-area">
+        <!-- Eliminamos el mensaje de ejemplo -->
+      </div>
+      <textarea id="userInput2" class="user-input" placeholder="Escribe tu mensaje aquí..." readonly></textarea>
+      <button id="sendBtn2" class="send-btn" disabled>Enviar</button>
+    </div>
+    <div id="chatBox3" class="chat-box bottom-left">
+      <div class="chat-name">America de los Tilines Unidos</div> <!-- Nombre del chat -->
+      <div id="messageArea3" class="message-area">
+        <!-- Eliminamos el mensaje de ejemplo -->
+      </div>
+      <textarea id="userInput3" class="user-input" placeholder="Escribe tu mensaje aquí..." readonly></textarea>
+      <button id="sendBtn3" class="send-btn" disabled>Enviar</button>
+    </div>
+    <button id="loginBtn">Login</button>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
