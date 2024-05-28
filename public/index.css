@@ -27,22 +27,25 @@ header {
     overflow-y: auto; /* Habilitar el desplazamiento vertical automático */
 }
 
-
 #messages li {
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 5px; /* Reducir el espacio entre los mensajes */
+    padding: 8px; /* Reducir el relleno de los mensajes */
     border-radius: 5px;
+    max-width: 70%; /* Limitar el ancho máximo de los mensajes */
+    word-wrap: break-word; /* Permitir que los mensajes se envuelvan si son demasiado largos */
 }
 
 #messages li.sent {
     background-color: #001a46; /* Color de fondo de mensajes enviados */
     color: #ffffff;
     align-self: flex-end;
+    margin-left: auto; /* Alinear los mensajes enviados a la derecha */
 }
 
 #messages li.receive {
     background-color: #757575; /* Color de fondo de mensajes recibidos */
     color: #ffffff;
+    margin-right: auto; /* Alinear los mensajes recibidos a la izquierda */
 }
 
 #message-form {
@@ -50,26 +53,23 @@ header {
     margin-top: 20px;
 }
 
-#message-input {
+#message-input, #image-url-input {
     flex: 1;
     padding: 10px;
     border: none;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px;
+    margin-right: 5px;
 }
 
 #message-btn {
     background-color: #4caf50; /* Color de fondo del botón de enviar */
     color: #ffffff;
     border: none;
-    border-radius: 0 5px 5px 0;
+    border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
 }
-#chat-container {
-    max-width: 800px; /* Ancho máximo del contenedor del chat */
-    margin: 0 auto; /* Centrar el contenedor en la página */
-    padding: 20px; /* Espacio interno del contenedor */
-    background-color: #212121; /* Color de fondo del contenedor del chat */
-    border-radius: 10px; /* Bordes redondeados del contenedor */
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Sombra para resaltar el contenedor */
+#messages li img {
+    max-width: 100%; /* Establecer el ancho máximo de las imágenes al 100% del contenedor */
+    height: auto; /* Permitir que la altura se ajuste automáticamente para mantener la proporción */
 }

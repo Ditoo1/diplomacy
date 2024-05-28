@@ -10,64 +10,86 @@ const firebaseConfig = {
 
   firebase.initializeApp(firebaseConfig);
 
-  // initialize database
+  // inicializar la base de datos
   const db = firebase.database();
+    
+  // obtener datos del usuario
+  let username = localStorage.getItem("username");
+  if (!username) {
+    username = prompt("Por favor, introduce tu nombre chistosín:");
+    localStorage.setItem("username", username);
+  }
   
-// get user's data
-let username = localStorage.getItem("username");
-if (!username) {
-  username = prompt("Por favor, introduce tu nombre chistosín:");
-  localStorage.setItem("username", username);
-}
-
-// Validar que el nombre no esté vacío
-while (!username.trim()) {
-  username = prompt("¡Ups! Parece que no ingresaste un nombre. Por favor, introduce tu nombre chistosín:");
-  localStorage.setItem("username", username);
-}
-
-
+  // validar que el nombre no esté vacío
+  while (!username.trim()) {
+    username = prompt("¡Ups! Parece que no ingresaste un nombre. Por favor, introduce tu nombre chistosín:");
+    localStorage.setItem("username", username);
+  }
   
-  // submit form
-  // listen for submit event on the form and call the postChat function
+  // enviar mensaje o imagen
   document.getElementById("message-form").addEventListener("submit", sendMessage);
   
-  // send message to db
   function sendMessage(e) {
     e.preventDefault();
   
-    // get values to be submitted
+    // obtener valores a enviar
     const timestamp = Date.now();
     const messageInput = document.getElementById("message-input");
+    const imageUrlInput = document.getElementById("image-url-input");
     const message = messageInput.value;
+    const imageUrl = imageUrlInput.value;
   
-    // clear the input box
+    // limpiar los campos de entrada
     messageInput.value = "";
+    imageUrlInput.value = "";
   
-    //auto scroll to bottom
+    // auto desplazarse hacia abajo
     document
       .getElementById("messages")
       .scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
   
-    // create db collection and send in the data
-    db.ref("messages/" + timestamp).set({
-      username,
-      message,
-    });
+    // enviar el mensaje a la base de datos
+    if (imageUrl.trim() !== "") {
+      // si hay una URL de imagen, enviar un mensaje con la URL de la imagen
+      db.ref("messages/" + timestamp).set({
+        username,
+        imageUrl,
+      });
+    } else if (message.trim() !== "") {
+      // si no hay una URL de imagen, enviar un mensaje de texto normal
+      db.ref("messages/" + timestamp).set({
+        username,
+        message,
+      });
+    }
   }
   
- // display the messages
-// reference the collection created earlier
-const fetchChat = db.ref("messages/");
-
-// check for new messages using the onChildAdded event listener
-fetchChat.on("child_added", function(snapshot) {
-  const messages = snapshot.val();
-  const message = `<li class=${username === messages.username ? "sent" : "receive"}><span>${messages.username}: </span>${messages.message}</li>`;
-  // append the message on the page
-  document.getElementById("messages").innerHTML += message;
-
-  // scroll to bottom
-  const messagesDiv = document.getElementById("messages");
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-});
+  // mostrar los mensajes
+  const fetchChat = db.ref("messages/");
+  
+  fetchChat.on("child_added", function(snapshot) {
+    const messageData = snapshot.val();
+  
+    let messageElement;
+  
+    if (messageData.imageUrl) {
+      // si el mensaje contiene una URL de imagen, mostrar la imagen
+      messageElement = `<li class="${username === messageData.username ? "sent" : "receive"}">
+                          <span>${messageData.username}:</span> 
+                          <img src="${messageData.imageUrl}" alt="Imagen enviada">
+                        </li>`;
+    } else {
+      // si el mensaje es solo texto, mostrar el texto
+      messageElement = `<li class="${username === messageData.username ? "sent" : "receive"}">
+                          <span>${messageData.username}:</span> 
+                          ${messageData.message}
+                        </li>`;
+    }
+  
+    // agregar el mensaje al chat
+    document.getElementById("messages").innerHTML += messageElement;
+  
+    // desplazarse automáticamente hacia abajo
+    const messagesDiv = document.getElementById("messages");
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });

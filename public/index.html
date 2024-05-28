@@ -8,18 +8,19 @@
   </head>
   <body>
     <header>
-      <h2>NIGG CHAT 0.0.3</h2>
+      <h2>NIGG CHAT</h2>
     </header>
     
-    <div id="chat-container">
-        <!-- messages will display here -->
-        <ul id="messages"></ul>
-    
-        <!-- form to send message -->
-        <form id="message-form">
-            <input id="message-input" type="text" />
-            <button id="message-btn" type="submit">Send</button>
-        </form>
+    <div id="chat">
+      <!-- mensajes se mostrarán aquí -->
+      <ul id="messages"></ul>
+
+      <!-- formulario para enviar mensaje o imagen -->
+      <form id="message-form">
+        <input id="message-input" type="text" placeholder="Escribe tu mensaje aquí..." />
+        <input id="image-url-input" type="text" placeholder="URL de la imagen..." />
+        <button id="message-btn" type="submit">Enviar</button>
+      </form>
     </div>
 
     <!-- scripts -->
