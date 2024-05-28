@@ -6,21 +6,45 @@ body {
     color: #ffffff; /* Texto blanco */
 }
 
+#login-container {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+#login-container input[type="text"],
+#login-container button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+#login-container button {
+    background-color: #2196F3; /* Azul */
+    color: #ffffff; /* Texto blanco */
+    cursor: pointer;
+}
+
 #app {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
+    display: none; /* Ocultar la aplicación al principio */
 }
 
 textarea {
-    width: calc(100% - 70px); /* Ajusta el tamaño del textarea para dejar espacio para el botón */
+    width: 97%;
+    height: 70px; /* Ajusta el tamaño del textarea para dejar espacio para el botón */
     margin-bottom: 10px;
     background-color: #1f1f1f; /* Fondo del área de texto */
     color: #ffffff; /* Texto blanco */
     border: none;
     padding: 10px;
     border-radius: 5px;
+    resize: none; /* Evita que el área de texto sea redimensionable */
 }
+
 
 button {
     background-color: #2196F3; /* Azul */
@@ -30,7 +54,6 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    
 }
 
 button:hover {
@@ -41,8 +64,8 @@ button:hover {
     background-color: #0d47a1; /* Azul oscuro para las publicaciones */
     border: 1px solid #1565c0; /* Borde de las cajas de publicaciones */
     padding: 10px;
-    margin-top: 20px;
     margin-bottom: 10px;
+    margin-top: 20px;
     position: relative; /* Agregado para poder posicionar la marca de tiempo */
     border-radius: 5px;
     transition: opacity 0.5s ease; /* Transición de opacidad al aparecer una nueva publicación */

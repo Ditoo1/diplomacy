@@ -7,17 +7,32 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app">
+    <div id="login-container">
+        <h2>Ingresa tu nombre.</h2>
+        <input type="text" id="usernameInput" placeholder="Nombre reconocible">
+        <button onclick="login()">Entrar</button>
+    </div>
+    
+    <div id="app" style="display:none;">
+        <div id="userInfo">
+            <span id="loggedInUser"></span>
+            <button onclick="logout()">Cerrar sesión</button>
+        </div>
         <h1>NIÇHAT</h1>
-        <!-- Cambiamos el orden, ponemos la sección de postear primero -->
-        <textarea id="postInput" placeholder="Que piensas contar?"></textarea>
+        <textarea id="postInput" placeholder="Que piensas contarnos?"></textarea>
         <button onclick="post()">Postear</button>
-        <!-- Fin de la sección de postear -->
+        <div id="posts"></div>
+    </div>    
+
+    <div id="app" style="display:none;">
+        <h1>NIÇHAT</h1>
+        <textarea id="postInput" placeholder="Que piensas contarnos?"></textarea>
+        <button onclick="post()">Post</button>
         <div id="posts"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
