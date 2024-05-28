@@ -9,9 +9,6 @@ const firebaseConfig = {
     appId: process.env.appId
 };
 
-export default firebaseConfig;
-
-
 // Inicialización de Firebase
 firebase.initializeApp(firebaseConfig);
 
