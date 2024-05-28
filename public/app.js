@@ -108,38 +108,67 @@ function handleAddComment(postId) {
     const commentText = commentInput.value.trim();
     if (commentText !== '') {
         addComment(postId, commentText);
-        commentInput.value = '';
+        commentInput.value = ''; // Limpiar el cuadro de texto del comentario
     } else {
         alert('Por favor, ingrese un comentario.');
     }
 }
 
-// Cargar mensajes existentes y escuchar cambios en tiempo real
-database.ref('posts').on('child_added', function(data) {
-    const post = data.val();
-    const postId = data.key;
+// Función para cargar las publicaciones y los comentarios desde la base de datos
+function loadPosts() {
+    const postsRef = database.ref('posts');
+    postsRef.on('child_added', function(snapshot) {
+        const post = snapshot.val();
+        const postId = snapshot.key;
+        displayPost(postId, post);
+    });
+}
+
+// Función para mostrar una publicación en la página
+function displayPost(postId, post) {
+    const postsContainer = document.getElementById('postsContainer');
+
     const postElement = document.createElement('div');
-    postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
+    postElement.classList.add('post');
+    postElement.classList.add('active');
+
     postElement.innerHTML = `
         <p><strong>${post.username}</strong>: ${post.text}</p>
-        <span class="timestamp">${post.time}</span>
+        <div class="timestamp">${post.time}</div>
         <div class="comments" id="comments-${postId}">
-            <!-- Comentarios serán añadidos aquí -->
+            <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario">
+            <button onclick="handleAddComment('${postId}')">Comentar</button>
         </div>
-        <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
-        <button onclick="handleAddComment('${postId}')">Comentar</button>
     `;
-    document.getElementById('posts').prepend(postElement); // Cambiado a prepend para mostrar mensajes más recientes primero
 
-    // Escuchar cambios en los comentarios
-    database.ref(`comments/${postId}`).on('child_added', function(commentData) {
-        const comment = commentData.val();
-        const commentElement = document.createElement('div');
-        commentElement.classList.add('comment');
-        commentElement.innerHTML = `
-            <p><strong>${comment.username}</strong>: ${comment.text}</p>
-            <span class="timestamp">${comment.time}</span>
-        `;
-        document.getElementById(`comments-${postId}`).appendChild(commentElement);
+    postsContainer.appendChild(postElement);
+
+    loadComments(postId);
+}
+
+// Función para cargar los comentarios de una publicación
+function loadComments(postId) {
+    const commentsRef = database.ref(`comments/${postId}`);
+    commentsRef.on('child_added', function(snapshot) {
+        const comment = snapshot.val();
+        displayComment(postId, comment);
     });
-});
+}
+
+// Función para mostrar un comentario en una publicación
+function displayComment(postId, comment) {
+    const commentsContainer = document.getElementById(`comments-${postId}`);
+
+    const commentElement = document.createElement('div');
+    commentElement.classList.add('comment');
+
+    commentElement.innerHTML = `
+        <p><strong>${comment.username}</strong>: ${comment.text}</p>
+        <div class="timestamp">${comment.time}</div>
+    `;
+
+    commentsContainer.appendChild(commentElement);
+}
+
+// Cargar las publicaciones al iniciar la aplicación
+loadPosts();
