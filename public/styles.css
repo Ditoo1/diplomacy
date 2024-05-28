@@ -90,20 +90,21 @@ button:hover {
 }
 
 .comment {
-    background-color: #1f1f1f; /* Fondo del comentario */
-    padding: 5px;
-    margin-top: 5px;
+    background-color: #2e2e2e; /* Fondo del comentario */
+    padding: 10px;
+    margin-top: 10px;
     border-radius: 5px;
 }
 
 .comment .timestamp {
     font-size: 0.8em;
+    color: #cccccc; /* Color más claro para la marca de tiempo del comentario */
 }
 
 /* Media query para dispositivos móviles */
 @media (max-width: 600px) {
     .post {
-        padding-bottom: 60px; /* Espacio adicional para evitar la superposición */
+        padding-bottom: 80px; /* Espacio adicional para evitar la superposición */
     }
 
     .timestamp {
