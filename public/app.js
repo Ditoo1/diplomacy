@@ -138,7 +138,7 @@ database.ref('posts').on('child_added', function(data) {
         commentElement.classList.add('comment');
         commentElement.innerHTML = `
             <p><strong>${comment.username}</strong>: ${comment.text}</p>
-            <span class="timestamp">${comment.time}</span>
+            <p class="comment-timestamp">${comment.time}</p> <!-- Añadido el timestamp aquí -->
         `;
         document.getElementById(`comments-${postId}`).appendChild(commentElement);
     });
