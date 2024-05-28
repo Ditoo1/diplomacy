@@ -1,5 +1,5 @@
 // Configura tu proyecto Firebase aquí
-const firebaseConfig = {
+var firebaseConfig = {
     apiKey: process.env.apiKey,
     authDomain: process.env.authDomain,
     databaseURL: process.env.databaseURL,
