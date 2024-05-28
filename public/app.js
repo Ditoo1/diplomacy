@@ -1,13 +1,16 @@
 // Configura tu proyecto Firebase aquí
 const firebaseConfig = {
-    apiKey: "AIzaSyBdZ1Yj-XBAhSIjlbaniYaVv2YAI1mihnQ",
-    authDomain: "socialred-45a8b.firebaseapp.com",
-    databaseURL: "https://socialred-45a8b-default-rtdb.firebaseio.com",
-    projectId: "socialred-45a8b",
-    storageBucket: "socialred-45a8b.appspot.com",
-    messagingSenderId: "317857948271",
-    appId: "1:317857948271:web:3a660e79fe1ce26e1d239a"
-  };
+    apiKey: process.env.apiKey,
+    authDomain: process.env.authDomain,
+    databaseURL: process.env.databaseURL,
+    projectId: process.env.projectId,
+    storageBucket: process.env.storageBucket,
+    messagingSenderId: process.env.messagingSenderId,
+    appId: process.env.appId
+};
+
+export default firebaseConfig;
+
 
 // Inicialización de Firebase
 firebase.initializeApp(firebaseConfig);
