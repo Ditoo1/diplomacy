@@ -14,6 +14,7 @@ body {
 
 #login-container input[type="text"],
 #login-container button {
+    width: 100%; /* Ajustar al 100% del contenedor */
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 5px;
@@ -44,7 +45,6 @@ textarea {
     border-radius: 5px;
     resize: none; /* Evita que el área de texto sea redimensionable */
 }
-
 
 button {
     background-color: #2196F3; /* Azul */
@@ -81,4 +81,37 @@ button:hover {
     bottom: 5px; /* Posicionamiento en la esquina inferior */
     right: 5px; /* Posicionamiento en la esquina derecha */
     color: #ffffff; /* Texto blanco */
+}
+
+.comments {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1565c0; /* Añadir una línea de separación para los comentarios */
+}
+
+.comment {
+    background-color: #1f1f1f; /* Fondo del comentario */
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.comment .timestamp {
+    font-size: 0.8em;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 600px) {
+    .post {
+        padding-bottom: 60px; /* Espacio adicional para evitar la superposición */
+    }
+
+    .timestamp {
+        bottom: 45px; /* Ajuste la posición para dispositivos móviles */
+    }
+
+    input[type="text"], button {
+        width: calc(100% - 20px); /* Asegurar que los elementos de entrada y botón no se solapen con otros elementos */
+        margin: 5px 10px; /* Espaciado para los elementos de entrada y botón */
+    }
 }
