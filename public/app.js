@@ -63,6 +63,9 @@ window.onload = function() {
         document.getElementById('app').style.display = 'block';
         document.getElementById('loggedInUser').innerText = `Bienvenido, ${storedUsername}!`;
     }
+
+    // Cargar publicaciones
+    loadPosts();
 };
 
 // Función para publicar un nuevo mensaje
@@ -108,67 +111,54 @@ function handleAddComment(postId) {
     const commentText = commentInput.value.trim();
     if (commentText !== '') {
         addComment(postId, commentText);
-        commentInput.value = ''; // Limpiar el cuadro de texto del comentario
+        commentInput.value = ''; // Limpiar el campo de entrada después de añadir el comentario
     } else {
         alert('Por favor, ingrese un comentario.');
     }
 }
 
-// Función para cargar las publicaciones y los comentarios desde la base de datos
+// Función para cargar y mostrar las publicaciones y sus comentarios
 function loadPosts() {
     const postsRef = database.ref('posts');
-    postsRef.on('child_added', function(snapshot) {
-        const post = snapshot.val();
-        const postId = snapshot.key;
-        displayPost(postId, post);
+    postsRef.on('value', snapshot => {
+        const postsContainer = document.getElementById('postsContainer');
+        postsContainer.innerHTML = ''; // Limpiar el contenedor de publicaciones
+        const posts = snapshot.val();
+        for (const postId in posts) {
+            const post = posts[postId];
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.innerHTML = `
+                <p><strong>${post.username}</strong>: ${post.text}</p>
+                <p class="timestamp">${post.time}</p>
+                <div class="comments" id="comments-${postId}">
+                    <!-- Contenedor de comentarios -->
+                </div>
+                <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario...">
+                <button onclick="handleAddComment('${postId}')">Comentar</button>
+            `;
+            postsContainer.appendChild(postElement);
+            loadComments(postId);
+        }
     });
 }
 
-// Función para mostrar una publicación en la página
-function displayPost(postId, post) {
-    const postsContainer = document.getElementById('postsContainer');
-
-    const postElement = document.createElement('div');
-    postElement.classList.add('post');
-    postElement.classList.add('active');
-
-    postElement.innerHTML = `
-        <p><strong>${post.username}</strong>: ${post.text}</p>
-        <div class="timestamp">${post.time}</div>
-        <div class="comments" id="comments-${postId}">
-            <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario">
-            <button onclick="handleAddComment('${postId}')">Comentar</button>
-        </div>
-    `;
-
-    postsContainer.appendChild(postElement);
-
-    loadComments(postId);
-}
-
-// Función para cargar los comentarios de una publicación
+// Función para cargar y mostrar los comentarios de una publicación
 function loadComments(postId) {
     const commentsRef = database.ref(`comments/${postId}`);
-    commentsRef.on('child_added', function(snapshot) {
-        const comment = snapshot.val();
-        displayComment(postId, comment);
+    commentsRef.on('value', snapshot => {
+        const commentsContainer = document.getElementById(`comments-${postId}`);
+        commentsContainer.innerHTML = ''; // Limpiar el contenedor de comentarios
+        const comments = snapshot.val();
+        for (const commentId in comments) {
+            const comment = comments[commentId];
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.innerHTML = `
+                <p><strong>${comment.username}</strong>: ${comment.text}</p>
+                <p class="timestamp">${comment.time}</p>
+            `;
+            commentsContainer.appendChild(commentElement);
+        }
     });
 }
-
-// Función para mostrar un comentario en una publicación
-function displayComment(postId, comment) {
-    const commentsContainer = document.getElementById(`comments-${postId}`);
-
-    const commentElement = document.createElement('div');
-    commentElement.classList.add('comment');
-
-    commentElement.innerHTML = `
-        <p><strong>${comment.username}</strong>: ${comment.text}</p>
-        <div class="timestamp">${comment.time}</div>
-    `;
-
-    commentsContainer.appendChild(commentElement);
-}
-
-// Cargar las publicaciones al iniciar la aplicación
-loadPosts();
