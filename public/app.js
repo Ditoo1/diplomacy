@@ -63,9 +63,6 @@ window.onload = function() {
         document.getElementById('app').style.display = 'block';
         document.getElementById('loggedInUser').innerText = `Bienvenido, ${storedUsername}!`;
     }
-
-    // Cargar publicaciones
-    loadPosts();
 };
 
 // Función para publicar un nuevo mensaje
@@ -111,54 +108,38 @@ function handleAddComment(postId) {
     const commentText = commentInput.value.trim();
     if (commentText !== '') {
         addComment(postId, commentText);
-        commentInput.value = ''; // Limpiar el campo de entrada después de añadir el comentario
+        commentInput.value = '';
     } else {
         alert('Por favor, ingrese un comentario.');
     }
 }
 
-// Función para cargar y mostrar las publicaciones y sus comentarios
-function loadPosts() {
-    const postsRef = database.ref('posts');
-    postsRef.on('value', snapshot => {
-        const postsContainer = document.getElementById('postsContainer');
-        postsContainer.innerHTML = ''; // Limpiar el contenedor de publicaciones
-        const posts = snapshot.val();
-        for (const postId in posts) {
-            const post = posts[postId];
-            const postElement = document.createElement('div');
-            postElement.className = 'post';
-            postElement.innerHTML = `
-                <p><strong>${post.username}</strong>: ${post.text}</p>
-                <p class="timestamp">${post.time}</p>
-                <div class="comments" id="comments-${postId}">
-                    <!-- Contenedor de comentarios -->
-                </div>
-                <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario...">
-                <button onclick="handleAddComment('${postId}')">Comentar</button>
-            `;
-            postsContainer.appendChild(postElement);
-            loadComments(postId);
-        }
-    });
-}
+// Cargar mensajes existentes y escuchar cambios en tiempo real
+database.ref('posts').on('child_added', function(data) {
+    const post = data.val();
+    const postId = data.key;
+    const postElement = document.createElement('div');
+    postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
+    postElement.innerHTML = `
+        <p><strong>${post.username}</strong>: ${post.text}</p>
+        <span class="timestamp">${post.time}</span>
+        <div class="comments" id="comments-${postId}">
+            <!-- Comentarios serán añadidos aquí -->
+        </div>
+        <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
+        <button onclick="handleAddComment('${postId}')">Comentar</button>
+    `;
+    document.getElementById('posts').prepend(postElement); // Cambiado a prepend para mostrar mensajes más recientes primero
 
-// Función para cargar y mostrar los comentarios de una publicación
-function loadComments(postId) {
-    const commentsRef = database.ref(`comments/${postId}`);
-    commentsRef.on('value', snapshot => {
-        const commentsContainer = document.getElementById(`comments-${postId}`);
-        commentsContainer.innerHTML = ''; // Limpiar el contenedor de comentarios
-        const comments = snapshot.val();
-        for (const commentId in comments) {
-            const comment = comments[commentId];
-            const commentElement = document.createElement('div');
-            commentElement.className = 'comment';
-            commentElement.innerHTML = `
-                <p><strong>${comment.username}</strong>: ${comment.text}</p>
-                <p class="timestamp">${comment.time}</p>
-            `;
-            commentsContainer.appendChild(commentElement);
-        }
+    // Escuchar cambios en los comentarios
+    database.ref(`comments/${postId}`).on('child_added', function(commentData) {
+        const comment = commentData.val();
+        const commentElement = document.createElement('div');
+        commentElement.classList.add('comment');
+        commentElement.innerHTML = `
+            <p><strong>${comment.username}</strong>: ${comment.text}</p>
+            <span class="timestamp">${comment.time}</span>
+        `;
+        document.getElementById(`comments-${postId}`).appendChild(commentElement);
     });
-}
+});
