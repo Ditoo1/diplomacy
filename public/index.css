@@ -4,6 +4,11 @@ body {
     font-family: Arial, sans-serif; /* Fuente */
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 header {
@@ -11,12 +16,26 @@ header {
     color: #ffffff; /* Color del texto del encabezado */
     text-align: center;
     padding: 20px 0;
+    margin-bottom: 20px;
+    position: relative; /* Para posicionar la hora de Santiago */
+}
+
+#santiago-time {
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center; /* Centrar el texto */
+    position: absolute;
+    bottom: -20px; /* Ajustar la posición vertical */
+    width: 100%;
 }
 
 #chat {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #messages {
@@ -25,6 +44,11 @@ header {
     margin: 0;
     max-height: 400px; /* Altura máxima del contenedor de mensajes */
     overflow-y: auto; /* Habilitar el desplazamiento vertical automático */
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 #messages li {
@@ -48,8 +72,22 @@ header {
     margin-right: auto; /* Alinear los mensajes recibidos a la izquierda */
 }
 
+#messages li img {
+    max-width: 100%; /* Establecer el ancho máximo de las imágenes al 100% del contenedor */
+    height: auto; /* Permitir que la altura se ajuste automáticamente para mantener la proporción */
+}
+
+.message-time {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+    margin-top: 5px;
+}
+
 #message-form {
     display: flex;
+    width: 100%;
     margin-top: 20px;
 }
 
@@ -69,69 +107,8 @@ header {
     padding: 10px 20px;
     cursor: pointer;
 }
-#messages li img {
-    max-width: 100%; /* Establecer el ancho máximo de las imágenes al 100% del contenedor */
-    height: auto; /* Permitir que la altura se ajuste automáticamente para mantener la proporción */
-}
-/* Estilos para el chat y la lista de usuarios activos */
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  #chat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  #messages {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 400px;
-    overflow-y: auto;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  #message-form {
-    display: flex;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  #message-input, #image-url-input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 5px;
-  }
-  
-  #message-btn {
-    background-color: #4caf50;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-  
-  #user-list {
+
+#user-list {
     position: fixed;
     top: 0;
     right: 0;
@@ -140,14 +117,13 @@ body {
     border-left: 1px solid #ccc;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  #active-users {
+}
+
+#active-users {
     list-style-type: none;
     padding: 0;
-  }
-  
-  #active-users li {
+}
+
+#active-users li {
     margin-bottom: 5px;
-  }
-  
+}
