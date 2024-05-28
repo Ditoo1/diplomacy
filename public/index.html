@@ -1,38 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NIGG CHAT</title>
-  <link rel="stylesheet" href="./index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIÇHAT</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h2>NIGG CHAT 0.0.7</h2>
-    <div id="santiago-time"></div> <!-- Hora de Santiago -->
-  </header>
-  
-  <div id="chat">
-    <!-- mensajes se mostrarán aquí -->
-    <ul id="messages"></ul>
+    <div id="app">
+        <h1>NIÇHAT</h1>
+        <!-- Cambiamos el orden, ponemos la sección de postear primero -->
+        <textarea id="postInput" placeholder="Que piensas contar?"></textarea>
+        <button onclick="post()">Postear</button>
+        <!-- Fin de la sección de postear -->
+        <div id="posts"></div>
+    </div>
 
-    <!-- formulario para enviar mensaje o imagen -->
-    <form id="message-form">
-      <input id="message-input" type="text" placeholder="Escribe tu mensaje aquí..." />
-      <input id="image-url-input" type="text" placeholder="URL de la imagen..." />
-      <button id="message-btn" type="submit">Enviar</button>
-    </form>
-  </div>
-
-  <!-- lista de usuarios activos -->
-  <div id="user-list">
-    <h3>Usuarios activos:</h3>
-    <ul id="active-users"></ul>
-  </div>
-
-  <!-- scripts -->
-  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
-  <script src="index.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+}
+
+#app {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+textarea {
+    width: calc(100% - 70px); /* Ajusta el tamaño del textarea para dejar espacio para el botón */
+    margin-bottom: 10px;
+    background-color: #1f1f1f; /* Fondo del área de texto */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #2196F3; /* Azul */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+}
+
+button:hover {
+    background-color: #1976D2; /* Azul más oscuro al pasar el cursor */
+}
+
+.post {
+    background-color: #0d47a1; /* Azul oscuro para las publicaciones */
+    border: 1px solid #1565c0; /* Borde de las cajas de publicaciones */
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    position: relative; /* Agregado para poder posicionar la marca de tiempo */
+    border-radius: 5px;
+    transition: opacity 0.5s ease; /* Transición de opacidad al aparecer una nueva publicación */
+    opacity: 0; /* Inicialmente invisible */
+}
+
+.post.active {
+    opacity: 1; /* Hacer la publicación visible al aparecer */
+}
+
+.timestamp {
+    position: absolute;
+    bottom: 5px; /* Posicionamiento en la esquina inferior */
+    right: 5px; /* Posicionamiento en la esquina derecha */
+    color: #ffffff; /* Texto blanco */
+}
