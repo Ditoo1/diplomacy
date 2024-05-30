@@ -192,7 +192,7 @@ database.ref('posts').on('child_added', function(data) {
         </div>
         <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
         <button onclick="handleAddComment('${postId}')">Comentar</button>
-        ${post.text.length > 100 ? `<button id="toggleButton-${postId}" onclick="toggleFullText('${postId}')">Ver más...</button>` : ''}
+        ${post.text.length > 1000 ? `<button id="toggleButton-${postId}" onclick="toggleFullText('${postId}')">Ver más...</button>` : ''}
     `;
 
     // Escuchar cambios en el contador de likes
