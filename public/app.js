@@ -71,13 +71,16 @@ function post() {
     if (postText !== '') {
         const username = localStorage.getItem('username'); // Obtener el nombre de usuario desde el almacenamiento local
         if (username !== '') {
-            const newPostRef = database.ref('posts').push();
-            newPostRef.set({
-                text: postText,
-                username: username, // Almacenar el nombre de usuario junto con la publicación
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                time: getCurrentTime() // Agregar la hora y fecha actual al mensaje
-            });
+     // Dentro de la función post()
+const newPostRef = database.ref('posts').push();
+newPostRef.set({
+    text: postText,
+    username: username,
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    time: getCurrentTime(),
+    reactions: 0 // Agregar un contador de reacciones inicializado en 0
+});
+
             document.getElementById('postInput').value = '';
         } else {
             alert('Por favor, ingrese su nombre.');
@@ -114,6 +117,38 @@ function handleAddComment(postId) {
     }
 }
 
+function reactToPost(postId) {
+    const postRef = database.ref(`posts/${postId}`);
+    postRef.transaction(function(post) {
+        console.log("Post antes de la transacción:", post); // Agregamos esta línea para depurar
+        if (post) {
+            if (!post.reactions) {
+                post.reactions = {};
+            }
+            const currentUser = localStorage.getItem('username');
+            if (!post.reactions[currentUser]) {
+                post.reactions[currentUser] = true; // Añadir like del usuario actual
+                post.reactionCount = (post.reactionCount || 0) + 1; // Incrementar el contador de likes
+            } else {
+                delete post.reactions[currentUser]; // Quitar like del usuario actual
+                post.reactionCount = Math.max(0, (post.reactionCount || 0) - 1); // Disminuir el contador de likes
+            }
+        } else {
+            // Si no hay datos de la publicación, crear una nueva con el contador de likes
+            post = {
+                reactions: {
+                    [localStorage.getItem('username')]: true
+                },
+                reactionCount: 1
+            };
+        }
+        console.log("Post después de la transacción:", post); // Agregamos esta línea para depurar
+        return post;
+    });
+}
+
+
+
 // Cargar mensajes existentes y escuchar cambios en tiempo real
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
@@ -123,14 +158,27 @@ database.ref('posts').on('child_added', function(data) {
     postElement.innerHTML = `
         <p><strong>${post.username}</strong>: ${post.text}</p>
         <span class="timestamp">${post.time}</span>
+        <div class="reactions">
+            <button class="reaction-button" onclick="reactToPost('${postId}')">👍🏿</button>
+            <span class="reaction-count" id="reactionCount-${postId}">${post.reactionCount || 0}</span>
+        </div>
         <div class="comments" id="comments-${postId}">
             <!-- Comentarios serán añadidos aquí -->
         </div>
         <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
         <button onclick="handleAddComment('${postId}')">Comentar</button>
     `;
-    document.getElementById('posts').prepend(postElement); // Cambiado a prepend para mostrar mensajes más recientes primero
 
+    // Escuchar cambios en el contador de likes
+    database.ref(`posts/${postId}/reactionCount`).on('value', function(snapshot) {
+        const reactionCount = snapshot.val();
+        const reactionCountElement = document.getElementById(`reactionCount-${postId}`);
+        if (reactionCountElement) {
+            reactionCountElement.textContent = reactionCount || 0;
+        }
+    });
+
+    document.getElementById('posts').prepend(postElement);
     // Escuchar cambios en los comentarios
     database.ref(`comments/${postId}`).on('child_added', function(commentData) {
         const comment = commentData.val();
