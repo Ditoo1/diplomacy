@@ -147,16 +147,39 @@ function reactToPost(postId) {
     });
 }
 
+function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+        return {
+            truncated: text.substring(0, maxLength) + '...',
+            fullText: text
+        };
+    }
+    return { truncated: text, fullText: text };
+}
 
+function toggleFullText(postId) {
+    const postTextElement = document.getElementById(`postText-${postId}`);
+    const fullText = postTextElement.dataset.fullText;
+    const truncatedText = postTextElement.dataset.truncatedText;
 
-// Cargar mensajes existentes y escuchar cambios en tiempo real
+    if (postTextElement.innerText === truncatedText) {
+        postTextElement.innerText = fullText;
+        document.getElementById(`toggleButton-${postId}`).innerText = 'Ver menos';
+    } else {
+        postTextElement.innerText = truncatedText;
+        document.getElementById(`toggleButton-${postId}`).innerText = 'Ver más...';
+    }
+}
+
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
     const postId = data.key;
+    const { truncated, fullText } = truncateText(post.text, 100); // Ajusta el valor 100 según la longitud deseada
+
     const postElement = document.createElement('div');
     postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
     postElement.innerHTML = `
-        <p style="white-space: pre-wrap;"><strong>${post.username}</strong>: ${post.text}</p>
+        <p id="postText-${postId}" data-full-text="${fullText}" data-truncated-text="${truncated}"><strong>${post.username}</strong>: ${truncated}</p>
         <span class="timestamp">${post.time}</span>
         <div class="reactions">
             <button class="reaction-button" onclick="reactToPost('${postId}')">👍🏿</button>
@@ -167,6 +190,7 @@ database.ref('posts').on('child_added', function(data) {
         </div>
         <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
         <button onclick="handleAddComment('${postId}')">Comentar</button>
+        ${post.text.length > 100 ? `<button id="toggleButton-${postId}" onclick="toggleFullText('${postId}')">Ver más...</button>` : ''}
     `;
 
     // Escuchar cambios en el contador de likes
