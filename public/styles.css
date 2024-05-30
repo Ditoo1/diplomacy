@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #121212; /* Fondo oscuro */
@@ -91,8 +93,10 @@ button:hover {
 
 .comment {
     background-color: #2e2e2e; /* Fondo del comentario */
-    padding: 10px;
-    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 1.5px;
+    padding-bottom: 0.5px;
+    padding-left: 10px;
     border-radius: 5px;
 }
 

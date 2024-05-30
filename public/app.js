@@ -156,7 +156,7 @@ database.ref('posts').on('child_added', function(data) {
     const postElement = document.createElement('div');
     postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
     postElement.innerHTML = `
-        <p><strong>${post.username}</strong>: ${post.text}</p>
+        <p style="white-space: pre-wrap;"><strong>${post.username}</strong>: ${post.text}</p>
         <span class="timestamp">${post.time}</span>
         <div class="reactions">
             <button class="reaction-button" onclick="reactToPost('${postId}')">👍🏿</button>
@@ -179,6 +179,7 @@ database.ref('posts').on('child_added', function(data) {
     });
 
     document.getElementById('posts').prepend(postElement);
+
     // Escuchar cambios en los comentarios
     database.ref(`comments/${postId}`).on('child_added', function(commentData) {
         const comment = commentData.val();
