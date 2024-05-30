@@ -118,56 +118,34 @@ button:hover {
         margin: 5px 10px; /* Espaciado para los elementos de entrada y botón */
     }
 }
-.switch-field {
-    display: flex;
-    margin-bottom: vh;
-    margin-bottom: 10px;
-    overflow: hidden;
-    align-items: center;
-    justify-content: left;
-    margin-top: 6%;
-    font-weight: bold;
-    transition: 1s;
-  }
-  
-  .switch-field input {
-    position: absolute !important;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    width: 1px;
-    border: 0;
-    overflow: hidden;
-  }
-  
-  .switch-field label {
-    background-color: #333333;
-    color: rgb(255, 255, 255);
-    font-size: 15px;
-    line-height: .8;
-    text-align: center;
-    white-space: nowrap;
-    padding: 10px 12px;
-    margin-right: -1px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
-    box-shadow: #000;
-    transition: .2s;
-  }
-  
-  .switch-field label:hover {
+
+.reactions {
+    display: flex; /* Mostrar los botones de reacción en línea */
+    align-items: center; /* Alinear verticalmente */
+}
+
+.reaction-button {
+    background-color: #2196F3; /* Azul */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    padding: 10px; /* Tamaño cuadrado */
+    width: auto; /* Permitir que el botón se ajuste al contenido */
+    height: auto; /* Permitir que el botón se ajuste al contenido */
+    border-radius: 5px; /* Añadir bordes redondeados */
     cursor: pointer;
-  }
-  
-  .switch-field input:checked + label {
-    background-color: #2196F3;
-    box-shadow: none;
-    color: white;
-  }
-  
-  .switch-field label:first-of-type {
-    border-radius: 12px 0 0 12px;
-  }
-  
-  .switch-field label:last-of-type {
-    border-radius: 0 12px 12px 0;
-  }
+    transition: background-color 0.3s ease;
+    margin-right: 5px; /* Añadir margen derecho */
+    display: inline-block; /* Mostrar como elemento en línea */
+}
+
+.reaction-button:hover {
+    background-color: #1976D2; /* Azul más oscuro al pasar el cursor */
+}
+
+.reaction-count {
+    color: #ffffff; /* Texto blanco */
+    margin-left: 5px; /* Añadir margen izquierdo */
+    display: inline-block; /* Mostrar como elemento en línea */
+    vertical-align: middle; /* Alinear verticalmente */
+}
+
