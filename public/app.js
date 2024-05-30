@@ -7,7 +7,7 @@ const firebaseConfig = {
     storageBucket: "socialred-45a8b.appspot.com",
     messagingSenderId: "317857948271",
     appId: "1:317857948271:web:3a660e79fe1ce26e1d239a"
-  };
+};
 
 // Inicialización de Firebase
 firebase.initializeApp(firebaseConfig);
@@ -21,7 +21,7 @@ function getCurrentTime() {
     const hours = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
     const minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
     const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const monthNames = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
     const month = monthNames[now.getMonth()];
     const day = now.getDate();
     const year = now.getFullYear();
@@ -69,7 +69,7 @@ window.onload = function() {
 function post() {
     const postText = document.getElementById('postInput').value.trim();
     if (postText !== '') {
-        const username = document.getElementById('usernameInput').value.trim(); // Obtener el nombre de usuario
+        const username = localStorage.getItem('username'); // Obtener el nombre de usuario desde el almacenamiento local
         if (username !== '') {
             const newPostRef = database.ref('posts').push();
             newPostRef.set({
@@ -87,14 +87,59 @@ function post() {
     }
 }
 
+// Función para añadir un nuevo comentario
+function addComment(postId, commentText) {
+    const username = localStorage.getItem('username');
+    if (username !== '') {
+        const newCommentRef = database.ref(`comments/${postId}`).push();
+        newCommentRef.set({
+            text: commentText,
+            username: username,
+            time: getCurrentTime()
+        });
+    } else {
+        alert('Por favor, ingrese su nombre.');
+    }
+}
+
+// Función para manejar el evento de añadir un comentario
+function handleAddComment(postId) {
+    const commentInput = document.getElementById(`commentInput-${postId}`);
+    const commentText = commentInput.value.trim();
+    if (commentText !== '') {
+        addComment(postId, commentText);
+        commentInput.value = '';
+    } else {
+        alert('Por favor, ingrese un comentario.');
+    }
+}
+
 // Cargar mensajes existentes y escuchar cambios en tiempo real
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
+    const postId = data.key;
     const postElement = document.createElement('div');
     postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
     postElement.innerHTML = `
         <p><strong>${post.username}</strong>: ${post.text}</p>
         <span class="timestamp">${post.time}</span>
+        <div class="comments" id="comments-${postId}">
+            <!-- Comentarios serán añadidos aquí -->
+        </div>
+        <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
+        <button onclick="handleAddComment('${postId}')">Comentar</button>
     `;
     document.getElementById('posts').prepend(postElement); // Cambiado a prepend para mostrar mensajes más recientes primero
+
+    // Escuchar cambios en los comentarios
+    database.ref(`comments/${postId}`).on('child_added', function(commentData) {
+        const comment = commentData.val();
+        const commentElement = document.createElement('div');
+        commentElement.classList.add('comment');
+        commentElement.innerHTML = `
+            <p><strong>${comment.username}</strong>: ${comment.text}</p>
+            <p class="comment-timestamp">${comment.time}</p> <!-- Añadido el timestamp aquí -->
+        `;
+        document.getElementById(`comments-${postId}`).appendChild(commentElement);
+    });
 });
