@@ -71,14 +71,15 @@ function post() {
     if (postText !== '') {
         const username = localStorage.getItem('username'); // Obtener el nombre de usuario desde el almacenamiento local
         if (username !== '') {
-            const newPostRef = database.ref('posts').push();
-            newPostRef.set({
-                text: postText,
-                username: username,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                time: getCurrentTime(),
-                reactions: 0 // Agregar un contador de reacciones inicializado en 0
-            });
+     // Dentro de la función post()
+const newPostRef = database.ref('posts').push();
+newPostRef.set({
+    text: postText,
+    username: username,
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+    time: getCurrentTime(),
+    reactions: 0 // Agregar un contador de reacciones inicializado en 0
+});
 
             document.getElementById('postInput').value = '';
         } else {
@@ -146,42 +147,16 @@ function reactToPost(postId) {
     });
 }
 
-// Añadir aquí la función truncateText
-function truncateText(text, maxLength) {
-    if (text.length > maxLength) {
-        return {
-            truncated: text.substring(0, maxLength) + '...',
-            fullText: text
-        };
-    }
-    return { truncated: text, fullText: text };
-}
 
-// Añadir aquí la función toggleFullText
-function toggleFullText(postId) {
-    const postTextElement = document.getElementById(`postText-${postId}`);
-    const fullText = postTextElement.dataset.fullText;
-    const truncatedText = postTextElement.dataset.truncatedText;
 
-    if (postTextElement.innerText === truncatedText) {
-        postTextElement.innerText = fullText;
-        document.getElementById(`toggleButton-${postId}`).innerText = 'Ver menos';
-    } else {
-        postTextElement.innerText = truncatedText;
-        document.getElementById(`toggleButton-${postId}`).innerText = 'Ver más...';
-    }
-}
-
-// Modificar la función database.ref('posts').on('child_added') para usar truncateText
+// Cargar mensajes existentes y escuchar cambios en tiempo real
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
     const postId = data.key;
-    const { truncated, fullText } = truncateText(post.text, 300); // Ajusta el valor 100 según la longitud deseada
-
     const postElement = document.createElement('div');
     postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
     postElement.innerHTML = `
-        <p id="postText-${postId}" data-full-text="${fullText}" data-truncated-text="${truncated}"><strong>${post.username}</strong>: ${truncated}</p>
+        <p style="white-space: pre-wrap;"><strong>${post.username}</strong>: ${post.text}</p>
         <span class="timestamp">${post.time}</span>
         <div class="reactions">
             <button class="reaction-button" onclick="reactToPost('${postId}')">👍🏿</button>
@@ -192,7 +167,6 @@ database.ref('posts').on('child_added', function(data) {
         </div>
         <input type="text" id="commentInput-${postId}" placeholder="Añadir un comentario" />
         <button onclick="handleAddComment('${postId}')">Comentar</button>
-        ${post.text.length > 1000 ? `<button id="toggleButton-${postId}" onclick="toggleFullText('${postId}')">Ver más...</button>` : ''}
     `;
 
     // Escuchar cambios en el contador de likes
