@@ -176,7 +176,7 @@ function toggleFullText(postId) {
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
     const postId = data.key;
-    const { truncated, fullText } = truncateText(post.text, 100); // Ajusta el valor 100 según la longitud deseada
+    const { truncated, fullText } = truncateText(post.text, 300); // Ajusta el valor 100 según la longitud deseada
 
     const postElement = document.createElement('div');
     postElement.classList.add('post', 'active'); // Agregamos la clase 'active' para hacer visible la publicación
