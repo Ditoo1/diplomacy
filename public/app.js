@@ -71,15 +71,14 @@ function post() {
     if (postText !== '') {
         const username = localStorage.getItem('username'); // Obtener el nombre de usuario desde el almacenamiento local
         if (username !== '') {
-     // Dentro de la función post()
-const newPostRef = database.ref('posts').push();
-newPostRef.set({
-    text: postText,
-    username: username,
-    timestamp: firebase.database.ServerValue.TIMESTAMP,
-    time: getCurrentTime(),
-    reactions: 0 // Agregar un contador de reacciones inicializado en 0
-});
+            const newPostRef = database.ref('posts').push();
+            newPostRef.set({
+                text: postText,
+                username: username,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                time: getCurrentTime(),
+                reactions: 0 // Agregar un contador de reacciones inicializado en 0
+            });
 
             document.getElementById('postInput').value = '';
         } else {
@@ -147,6 +146,7 @@ function reactToPost(postId) {
     });
 }
 
+// Añadir aquí la función truncateText
 function truncateText(text, maxLength) {
     if (text.length > maxLength) {
         return {
@@ -157,6 +157,7 @@ function truncateText(text, maxLength) {
     return { truncated: text, fullText: text };
 }
 
+// Añadir aquí la función toggleFullText
 function toggleFullText(postId) {
     const postTextElement = document.getElementById(`postText-${postId}`);
     const fullText = postTextElement.dataset.fullText;
@@ -171,6 +172,7 @@ function toggleFullText(postId) {
     }
 }
 
+// Modificar la función database.ref('posts').on('child_added') para usar truncateText
 database.ref('posts').on('child_added', function(data) {
     const post = data.val();
     const postId = data.key;
