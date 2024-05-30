@@ -21,7 +21,7 @@ function getCurrentTime() {
     const hours = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
     const minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
     const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
-    const monthNames = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DIC"];
     const month = monthNames[now.getMonth()];
     const day = now.getDate();
     const year = now.getFullYear();

@@ -12,33 +12,23 @@
         <input type="text" id="usernameInput" placeholder="Nombre reconocible">
         <button onclick="login()">Entrar</button>
     </div>
-
+    
     <div id="app" style="display:none;">
         <div id="userInfo">
             <span id="loggedInUser"></span>
             <button onclick="logout()">Cerrar sesión</button>
         </div>
         <h1>NIÇHAT</h1>
-
-        <div class="switch-field">
-            <input type="radio" id="radio-post" name="switch-type" value="post" checked/>
-            <label for="radio-post">Publicación</label>
-            <input type="radio" id="radio-topic" name="switch-type" value="topic"/>
-            <label for="radio-topic">Tema (NO FUNCIONA AÚN)</label>
-        </div>
-
-        <textarea id="contentInput" placeholder="¿Qué piensas contarnos?"></textarea>
-        <button id="submitButton" onclick="post()">Postear</button>
+        <textarea id="postInput" placeholder="Que piensas contarnos?"></textarea>
+        <button onclick="post()">Postear</button>
         <div id="posts"></div>
-        <div id="topics"></div>
     </div>    
 
-    <div id="topicView" style="display:none;">
-        <button onclick="backToMain()">Volver</button>
-        <h2 id="topicTitle"></h2>
-        <textarea id="commentInput" placeholder="Añadir un comentario"></textarea>
-        <button onclick="addComment()">Comentar</button>
-        <div id="comments"></div>
+    <div id="app" style="display:none;">
+        <h1>NIÇHAT</h1>
+        <textarea id="postInput" placeholder="Que piensas contarnos?"></textarea>
+        <button onclick="post()">Post</button>
+        <div id="posts"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
