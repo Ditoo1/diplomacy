@@ -116,7 +116,7 @@ function renderPosts() {
         postElement.className = 'post';
         postElement.innerHTML = `
             <div class="post-header">
-                <img src="${post.authorPic}" alt="Foto de perfil" class="post-author-pic">
+                <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic">
                 <div class="author">${post.author}</div>
             </div>
             <div class="content">${post.content}</div>
@@ -124,7 +124,7 @@ function renderPosts() {
                 ${post.replies ? Object.values(post.replies).map(reply => `
                     <div class="reply">
                         <div class="reply-header">
-                            <img src="${reply.authorPic}" alt="Foto de perfil" class="reply-author-pic">
+                            <img src="${reply.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="reply-author-pic">
                             <strong>${reply.author}:</strong>
                         </div>
                         <div>${reply.content}</div>
@@ -144,16 +144,19 @@ function showContentSection() {
     document.getElementById('content-section').classList.remove('hidden');
     document.getElementById('logout-btn').classList.remove('hidden');
     document.getElementById('user-name').textContent = currentUser.username;
-    document.getElementById('user-pic').src = currentUser.profilePic;
+    document.getElementById('user-pic').src = currentUser.profilePic || 'default_profile_pic.png';
+    if (currentUser.username === 'Dito') {
+        document.getElementById('admin-btn').classList.remove('hidden');
+    }
 }
 
 function toggleAdminPanel() {
     const adminPanel = document.getElementById('admin-panel');
-    if (adminPanel.classList.contains('hidden')) {
-        adminPanel.classList.remove('hidden');
+    if (adminPanel.style.display === "none" || adminPanel.style.display === "") {
+        adminPanel.style.display = "block";
         loadUsers();
     } else {
-        adminPanel.classList.add('hidden');
+        adminPanel.style.display = "none";
     }
 }
 
