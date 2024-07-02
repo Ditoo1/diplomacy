@@ -30,7 +30,7 @@ function login() {
                     showContentSection();
                     loadPosts();
                     if (username === 'Dito') {
-                        showAdminSection();
+                        document.getElementById('admin-btn').classList.remove('hidden');
                     }
                 } else if (userData.status === 'pending') {
                     alert('Tu solicitud de registro está pendiente de aprobación.');
@@ -45,8 +45,8 @@ function login() {
 }
 
 function register() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('reg-username').value;
+    const password = document.getElementById('reg-password').value;
     const profilePic = document.getElementById('profile-pic').files[0];
 
     if (username.trim() !== '' && password.trim() !== '' && profilePic) {
@@ -60,6 +60,7 @@ function register() {
                     status: 'pending'
                 });
                 alert('Solicitud de registro enviada. Espera la aprobación del administrador.');
+                showLoginForm();
             });
         });
     } else {
@@ -75,7 +76,8 @@ function createPost() {
             id: newPostRef.key,
             author: currentUser.username,
             content: content,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            authorPic: currentUser.profilePic
         });
         document.getElementById('post-content').value = '';
     }
@@ -88,7 +90,8 @@ function createReply(postId) {
         newReplyRef.set({
             author: currentUser.username,
             content: replyContent,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            authorPic: currentUser.profilePic
         });
         document.getElementById(`reply-${postId}`).value = '';
     }
@@ -112,13 +115,24 @@ function renderPosts() {
         const postElement = document.createElement('div');
         postElement.className = 'post';
         postElement.innerHTML = `
-            <div class="author">${post.author}</div>
+            <div class="post-header">
+                <img src="${post.authorPic}" alt="Foto de perfil" class="post-author-pic">
+                <div class="author">${post.author}</div>
+            </div>
             <div class="content">${post.content}</div>
             <div class="replies">
-                ${post.replies ? Object.values(post.replies).map(reply => `<div><strong>${reply.author}:</strong> ${reply.content}</div>`).join('') : ''}
+                ${post.replies ? Object.values(post.replies).map(reply => `
+                    <div class="reply">
+                        <div class="reply-header">
+                            <img src="${reply.authorPic}" alt="Foto de perfil" class="reply-author-pic">
+                            <strong>${reply.author}:</strong>
+                        </div>
+                        <div>${reply.content}</div>
+                    </div>
+                `).join('') : ''}
             </div>
             <textarea id="reply-${post.id}" placeholder="Responder a esta publicación"></textarea>
-            <button onclick="createReply('${post.id}')">Responder</button>
+            <button onclick="createReply('${post.id}')" class="small-btn">Responder</button>
         `;
         postsContainer.appendChild(postElement);
     });
@@ -126,15 +140,21 @@ function renderPosts() {
 
 function showContentSection() {
     document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('register-section').classList.add('hidden');
     document.getElementById('content-section').classList.remove('hidden');
     document.getElementById('logout-btn').classList.remove('hidden');
     document.getElementById('user-name').textContent = currentUser.username;
     document.getElementById('user-pic').src = currentUser.profilePic;
 }
 
-function showAdminSection() {
-    document.getElementById('admin-section').classList.remove('hidden');
-    loadUsers();
+function toggleAdminPanel() {
+    const adminPanel = document.getElementById('admin-panel');
+    if (adminPanel.classList.contains('hidden')) {
+        adminPanel.classList.remove('hidden');
+        loadUsers();
+    } else {
+        adminPanel.classList.add('hidden');
+    }
 }
 
 function loadUsers() {
@@ -155,11 +175,13 @@ function loadUsers() {
                 const approveBtn = document.createElement('button');
                 approveBtn.textContent = 'Aprobar';
                 approveBtn.onclick = () => approveUser(user.username);
+                approveBtn.className = 'small-btn';
                 li.appendChild(approveBtn);
 
                 const rejectBtn = document.createElement('button');
                 rejectBtn.textContent = 'Rechazar';
                 rejectBtn.onclick = () => rejectUser(user.username);
+                rejectBtn.className = 'small-btn';
                 li.appendChild(rejectBtn);
 
                 pendingUsers.appendChild(li);
@@ -181,9 +203,26 @@ function logout() {
     localStorage.removeItem('username');
     document.getElementById('login-section').classList.remove('hidden');
     document.getElementById('content-section').classList.add('hidden');
-    document.getElementById('admin-section').classList.add('hidden');
+    document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('logout-btn').classList.add('hidden');
+    document.getElementById('admin-btn').classList.add('hidden');
 }
+
+function showRegisterForm() {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('register-section').classList.remove('hidden');
+}
+
+function showLoginForm() {
+    document.getElementById('register-section').classList.add('hidden');
+    document.getElementById('login-section').classList.remove('hidden');
+}
+
+// Manejar la selección de archivo
+document.getElementById('profile-pic').addEventListener('change', function(e) {
+    const fileName = e.target.files[0].name;
+    document.getElementById('file-name').textContent = fileName;
+});
 
 // Verificar si el usuario ya está logueado
 window.onload = function() {
@@ -196,7 +235,7 @@ window.onload = function() {
                 showContentSection();
                 loadPosts();
                 if (savedUsername === 'Dito') {
-                    showAdminSection();
+                    document.getElementById('admin-btn').classList.remove('hidden');
                 }
             } else {
                 localStorage.removeItem('username');
