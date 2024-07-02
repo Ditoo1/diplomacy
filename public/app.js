@@ -122,20 +122,19 @@ function renderPosts() {
         const isVerified = post.author === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : '';
         postElement.innerHTML = `
             <div class="post-header">
-                <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic">
-                <div class="author">${post.author} ${isVerified} <span class="user-tag">${post.authorTag}</span></div>
+                <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic" onclick="showUserProfile('${post.author}')">
+                <div class="author" onclick="showUserProfile('${post.author}')">${post.author} ${isVerified}</div>
             </div>
             <div class="content">${post.content}</div>
             <div class="post-actions">
-                <button onclick="followUser('${post.author}')" class="small-btn">Seguir</button>
-                <span class="followers-count">${post.authorFollowers} seguidores</span>
+                <button onclick="likePost('${post.id}')" class="like-btn">👍🏿 <span class="like-count">${post.likes || 0}</span></button>
             </div>
             <div class="replies">
                 ${post.replies ? Object.values(post.replies).map(reply => `
                     <div class="reply">
                         <div class="reply-header">
-                            <img src="${reply.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="reply-author-pic">
-                            <strong>${reply.author} <span class="user-tag">${reply.authorTag}</span>:</strong>
+                            <img src="${reply.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="reply-author-pic" onclick="showUserProfile('${reply.author}')">
+                            <strong onclick="showUserProfile('${reply.author}')">${reply.author}:</strong>
                         </div>
                         <div>${reply.content}</div>
                     </div>
@@ -148,6 +147,18 @@ function renderPosts() {
     });
 }
 
+function likePost(postId) {
+    const postRef = database.ref(`posts/${postId}/likes`);
+    postRef.transaction((currentLikes) => {
+        return (currentLikes || 0) + 1;
+    }).then(() => {
+        loadPosts(); // Recarga los posts para actualizar el contador de likes
+    }).catch((error) => {
+        console.error('Error al dar like:', error);
+        alert('Hubo un error al intentar dar like. Por favor, intenta de nuevo.');
+    });
+}
+
 function showContentSection() {
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('register-section').classList.add('hidden');
@@ -155,9 +166,41 @@ function showContentSection() {
     document.getElementById('logout-btn').classList.remove('hidden');
     document.getElementById('user-name').textContent = currentUser.username;
     document.getElementById('user-pic').src = currentUser.profilePic || 'default_profile_pic.png';
-    if (currentUser.username === 'Dito') {
+    if (currentUser.tag === 'admin') {
         document.getElementById('admin-btn').classList.remove('hidden');
+    } else {
+        document.getElementById('admin-btn').classList.add('hidden');
     }
+}
+
+function showUserProfile(username) {
+    // Ocultar la sección de contenido principal
+    document.getElementById('content-section').classList.add('hidden');
+    
+    // Crear y mostrar la sección de perfil de usuario
+    const profileSection = document.createElement('div');
+    profileSection.id = 'profile-section';
+    profileSection.className = 'section';
+    
+    database.ref(`users/${username}`).once('value', (snapshot) => {
+        const userData = snapshot.val();
+        profileSection.innerHTML = `
+            <h2>${username}'s Profile ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
+            <img src="${userData.profilePic || 'default_profile_pic.png'}" alt="Foto de perfil" class="profile-pic">
+            <p class="bio">${userData.bio || 'No hay biografía disponible.'}</p>
+            <p>Seguidores: ${userData.followers || 0}</p>
+            ${currentUser.username !== username ? `<button onclick="followUser('${username}')" class="small-btn">Seguir</button>` : `<button onclick="editProfile()" class="small-btn">Editar perfil</button>`}
+            <button onclick="backToMainContent()" class="small-btn">Volver</button>
+        `;
+    });
+    
+    document.body.appendChild(profileSection);
+}
+
+function backToMainContent() {
+    document.getElementById('profile-section').remove();
+    document.getElementById('content-section').classList.remove('hidden');
+    loadPosts();
 }
 
 function toggleAdminPanel() {
@@ -205,6 +248,23 @@ function loadUsers() {
                 pendingUsers.appendChild(li);
             }
         });
+    });
+}
+
+function followUser(username) {
+    if (currentUser.username === username) {
+        alert('No puedes seguirte a ti mismo.');
+        return;
+    }
+    
+    database.ref(`users/${username}/followers`).transaction((followers) => {
+        return (followers || 0) + 1;
+    }).then(() => {
+        alert(`Ahora sigues a ${username}`);
+        loadPosts(); // Recarga los posts para actualizar el contador de seguidores
+    }).catch((error) => {
+        console.error('Error al seguir al usuario:', error);
+        alert('Hubo un error al intentar seguir al usuario. Por favor, intenta de nuevo.');
     });
 }
 
@@ -270,21 +330,5 @@ window.onload = function() {
                 localStorage.removeItem('username');
             }
         });
-        function followUser(username) {
-            if (currentUser.username === username) {
-                alert('No puedes seguirte a ti mismo.');
-                return;
-            }
-            
-            database.ref(`users/${username}/followers`).transaction((followers) => {
-                return (followers || 0) + 1;
-            }).then(() => {
-                alert(`Ahora sigues a ${username}`);
-                loadPosts(); // Recarga los posts para actualizar el contador de seguidores
-            }).catch((error) => {
-                console.error('Error al seguir al usuario:', error);
-                alert('Hubo un error al intentar seguir al usuario. Por favor, intenta de nuevo.');
-            });
-        }
     }
 };
