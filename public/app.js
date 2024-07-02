@@ -222,7 +222,7 @@ function showUserProfile(username) {
         const userData = snapshot.val();
         const isFollowing = userData.followers && userData.followers[currentUser.username];
         profileSection.innerHTML = `
-            <h2>${username}'s Profile ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
+            <h2>Perfil de ${username} ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
             <img src="${userData.profilePic || 'default_profile_pic.png'}" alt="Foto de perfil" class="profile-pic">
             <p class="bio">${userData.bio || 'No hay biografía disponible.'}</p>
             <p>Seguidores: <span id="follower-count">${Object.keys(userData.followers || {}).length}</span></p>
