@@ -10,21 +10,37 @@
 <body>
     <header>
         <h1>Nichat</h1>
+        <button id="logout-btn" class="hidden" onclick="logout()">Cerrar sesión</button>
     </header>
     
     <main>
         <div id="login-section" class="section">
             <input type="text" id="username" placeholder="Nombre de usuario">
+            <input type="password" id="password" placeholder="Contraseña">
+            <input type="file" id="profile-pic" accept="image/*">
             <button onclick="login()">Ingresar</button>
+            <button onclick="register()">Registrarse</button>
         </div>
 
         <div id="content-section" class="section hidden">
+            <div id="user-info">
+                <img id="user-pic" src="" alt="Foto de perfil">
+                <span id="user-name"></span>
+            </div>
             <div id="new-post" class="post-form">
                 <textarea id="post-content" placeholder="¿Qué piensas contarnos?"></textarea>
                 <button onclick="createPost()">Nichat</button>
             </div>
             
             <div id="posts"></div>
+        </div>
+
+        <div id="admin-section" class="section hidden">
+            <h2>Panel de Administración</h2>
+            <h3>Usuarios existentes</h3>
+            <ul id="existing-users"></ul>
+            <h3>Solicitudes de registro</h3>
+            <ul id="pending-users"></ul>
         </div>
     </main>
 
@@ -33,6 +49,7 @@
 
     <!-- Add Firebase products that you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
     <script src="app.js"></script>
 </body>
