@@ -42,6 +42,20 @@
             <div id="user-info">
                 <img id="user-pic" src="" alt="Foto de perfil">
                 <span id="user-name"></span>
+                <button id="edit-profile-btn" class="small-btn">Editar perfil</button>
+<div id="edit-profile-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Editar perfil</h2>
+        <div class="file-input-wrapper">
+            <button class="file-input-button">Cambiar foto de perfil</button>
+            <input type="file" id="edit-profile-pic" accept="image/*">
+        </div>
+        <span id="edit-file-name"></span>
+        <textarea id="edit-bio" placeholder="Escribe tu biografía"></textarea>
+        <button id="save-profile-btn">Guardar cambios</button>
+    </div>
+</div>
             </div>
             <div id="new-post" class="post-form">
                 <textarea id="post-content" placeholder="¿Qué piensas contarnos?"></textarea>

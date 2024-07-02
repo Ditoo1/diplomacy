@@ -29,7 +29,8 @@ function login() {
                         username: userData.username,
                         profilePic: userData.profilePic,
                         tag: userData.tag,
-                        followers: userData.followers
+                        followers: userData.followers,
+                        bio: userData.bio // Añade esto
                     };
                     localStorage.setItem('username', username);
                     showContentSection();
@@ -218,11 +219,11 @@ function showUserProfile(username) {
     profileSection.id = 'profile-section';
     profileSection.className = 'section';
     
-    database.ref(`users/${username}`).on('value', (snapshot) => {
+    database.ref(`users/${username}`).once('value', (snapshot) => {
         const userData = snapshot.val();
         const isFollowing = userData.followers && userData.followers[currentUser.username];
         profileSection.innerHTML = `
-            <h2>Perfil de ${username} ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
+            <h2>${username}'s Profile ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
             <img src="${userData.profilePic || 'default_profile_pic.png'}" alt="Foto de perfil" class="profile-pic">
             <p class="bio">${userData.bio || 'No hay biografía disponible.'}</p>
             <p>Seguidores: <span id="follower-count">${Object.keys(userData.followers || {}).length}</span></p>
@@ -237,6 +238,7 @@ function showUserProfile(username) {
     
     document.body.appendChild(profileSection);
 }
+
 function backToMainContent() {
     document.getElementById('profile-section').remove();
     document.getElementById('content-section').classList.remove('hidden');
@@ -338,6 +340,53 @@ function toggleFollow(username) {
         });
 }
 
+function showEditProfileModal() {
+    const modal = document.getElementById('edit-profile-modal');
+    modal.classList.remove('hidden');
+    
+    // Cargar la biografía actual
+    database.ref(`users/${currentUser.username}/bio`).once('value', (snapshot) => {
+        const bio = snapshot.val() || '';
+        document.getElementById('edit-bio').value = bio;
+    });
+
+    // Configurar el evento para cerrar el modal
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.onclick = () => modal.classList.add('hidden');
+}
+
+function saveProfileChanges() {
+    const bioText = document.getElementById('edit-bio').value;
+    const newProfilePic = document.getElementById('edit-profile-pic').files[0];
+
+    if (newProfilePic) {
+        const storageRef = storage.ref('profile_pics/' + currentUser.username);
+        storageRef.put(newProfilePic).then((snapshot) => {
+            snapshot.ref.getDownloadURL().then((downloadURL) => {
+                updateProfile(bioText, downloadURL);
+            });
+        });
+    } else {
+        updateProfile(bioText, currentUser.profilePic);
+    }
+}
+
+function updateProfile(bio, profilePicUrl) {
+    database.ref(`users/${currentUser.username}`).update({
+        bio: bio,
+        profilePic: profilePicUrl
+    }).then(() => {
+        currentUser.bio = bio;
+        currentUser.profilePic = profilePicUrl;
+        document.getElementById('user-pic').src = profilePicUrl;
+        document.getElementById('edit-profile-modal').classList.add('hidden');
+        alert('Perfil actualizado con éxito');
+    }).catch((error) => {
+        console.error('Error al actualizar el perfil:', error);
+        alert('Hubo un error al actualizar el perfil. Por favor, intenta de nuevo.');
+    });
+}
+
 function approveUser(username) {
     database.ref('users/' + username).update({ status: 'approved' });
 }
@@ -399,6 +448,8 @@ window.onload = function() {
             } else {
                 localStorage.removeItem('username');
             }
+            document.getElementById('edit-profile-btn').addEventListener('click', showEditProfileModal);
+document.getElementById('save-profile-btn').addEventListener('click', saveProfileChanges);
         });
     }
 };
