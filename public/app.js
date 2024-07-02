@@ -28,12 +28,13 @@ function login() {
                     currentUser = {
                         username: userData.username,
                         profilePic: userData.profilePic,
-                        // ... otros datos del usuario ...
+                        tag: userData.tag,
+                        followers: userData.followers
                     };
                     localStorage.setItem('username', username);
                     showContentSection();
                     loadPosts();
-                    if (username === 'Dito') {
+                    if (userData.tag === 'admin' || userData.tag === 'mod') {
                         document.getElementById('admin-btn').classList.remove('hidden');
                     }
                 } else if (userData.status === 'pending') {
@@ -59,7 +60,9 @@ function register() {
                     username: username,
                     password: password,
                     profilePic: downloadURL,
-                    status: 'pending'
+                    status: 'pending',
+                    tag: 'user',
+                    followers: 0
                 });
                 alert('Solicitud de registro enviada. Espera la aprobación del administrador.');
                 showLoginForm();
@@ -116,18 +119,23 @@ function renderPosts() {
     posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'post';
+        const isVerified = post.author === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : '';
         postElement.innerHTML = `
             <div class="post-header">
                 <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic">
-                <div class="author">${post.author}</div>
+                <div class="author">${post.author} ${isVerified} <span class="user-tag">${post.authorTag}</span></div>
             </div>
             <div class="content">${post.content}</div>
+            <div class="post-actions">
+                <button onclick="followUser('${post.author}')" class="small-btn">Seguir</button>
+                <span class="followers-count">${post.authorFollowers} seguidores</span>
+            </div>
             <div class="replies">
                 ${post.replies ? Object.values(post.replies).map(reply => `
                     <div class="reply">
                         <div class="reply-header">
                             <img src="${reply.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="reply-author-pic">
-                            <strong>${reply.author}:</strong>
+                            <strong>${reply.author} <span class="user-tag">${reply.authorTag}</span>:</strong>
                         </div>
                         <div>${reply.content}</div>
                     </div>
@@ -163,6 +171,11 @@ function toggleAdminPanel() {
 }
 
 function loadUsers() {
+    if (currentUser.tag !== 'admin') {
+        alert('No tienes permiso para acceder a esta función.');
+        return;
+    }
+
     database.ref('users').once('value', (snapshot) => {
         const existingUsers = document.getElementById('existing-users');
         const pendingUsers = document.getElementById('pending-users');
@@ -172,7 +185,7 @@ function loadUsers() {
         snapshot.forEach((childSnapshot) => {
             const user = childSnapshot.val();
             const li = document.createElement('li');
-            li.textContent = user.username;
+            li.textContent = `${user.username} (${user.tag})`;
 
             if (user.status === 'approved') {
                 existingUsers.appendChild(li);
@@ -191,7 +204,6 @@ function loadUsers() {
 
                 pendingUsers.appendChild(li);
             }
-            // No hacemos nada con los usuarios rechazados, ya que serán eliminados
         });
     });
 }
@@ -258,5 +270,21 @@ window.onload = function() {
                 localStorage.removeItem('username');
             }
         });
+        function followUser(username) {
+            if (currentUser.username === username) {
+                alert('No puedes seguirte a ti mismo.');
+                return;
+            }
+            
+            database.ref(`users/${username}/followers`).transaction((followers) => {
+                return (followers || 0) + 1;
+            }).then(() => {
+                alert(`Ahora sigues a ${username}`);
+                loadPosts(); // Recarga los posts para actualizar el contador de seguidores
+            }).catch((error) => {
+                console.error('Error al seguir al usuario:', error);
+                alert('Hubo un error al intentar seguir al usuario. Por favor, intenta de nuevo.');
+            });
+        }
     }
 };

@@ -197,3 +197,27 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+textarea {
+    resize: none;
+}
+
+.user-tag {
+    font-size: 0.8em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background-color: #4CAF50;
+    color: white;
+    margin-left: 5px;
+}
+
+.verified-badge {
+    cursor: help;
+    margin-left: 5px;
+}
+
+.followers-count {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-left: 10px;
+}
