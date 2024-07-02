@@ -127,9 +127,9 @@ function renderPosts() {
             <div class="post-header">
                 <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic" onclick="showUserProfile('${post.author}')">
                 <div class="author" onclick="showUserProfile('${post.author}')">${post.author} ${isVerified}</div>
-                <button onclick="likePost('${post.id}')" class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
-                    👍🏿 <span class="like-count">${post.likeCount || 0}</span>
-                </button>
+ <button onclick="likePost('${post.id}')" class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+    👍🏿 <span class="like-count">${post.likeCount || 0}</span>
+</button>
             </div>
             <div class="content">${post.content}</div>
             <div class="replies">
@@ -163,7 +163,7 @@ function likePost(postId) {
                 post.likeCount = (post.likeCount || 0) + 1;
             } else {
                 delete post.likes[currentUser.username];
-                post.likeCount = (post.likeCount || 1) - 1;
+                post.likeCount = Math.max(0, (post.likeCount || 1) - 1);
             }
         }
         return post;
@@ -329,7 +329,7 @@ function toggleFollow(username) {
                 followerCount.textContent = parseInt(followerCount.textContent) + 1;
             } else {
                 followBtn.textContent = 'Seguir';
-                followerCount.textContent = parseInt(followerCount.textContent) - 1;
+                followerCount.textContent = Math.max(0, parseInt(followerCount.textContent) - 1);
             }
         })
         .catch((error) => {

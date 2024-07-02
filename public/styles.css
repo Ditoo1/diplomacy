@@ -230,25 +230,21 @@ textarea {
 
 
 .like-btn {
-    background: #4CAF50;
+    background: none;
     border: none;
     color: white;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
+    padding: 0;
     font-size: 16px;
-    margin: 4px 2px;
     cursor: pointer;
-    border-radius: 4px;
 }
 
 .like-btn.liked {
-    background: #45a049;
+    color: #45a049;
 }
 
 .like-count {
     margin-left: 5px;
+    font-size: 14px;
 }
 
 .profile-pic {
