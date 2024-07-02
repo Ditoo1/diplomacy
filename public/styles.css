@@ -1,155 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+:root {
+    --primary-color: #4a0e4e;
+    --secondary-color: #666666;
+    --background-color: #f0f0f0;
+    --text-color: #333333;
+    --light-gray: #e0e0e0;
+}
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #121212; /* Fondo oscuro */
-    color: #ffffff; /* Texto blanco */
 }
 
-#login-container {
-    max-width: 600px;
-    margin: 100px auto;
+header {
+    background-color: var(--primary-color);
+    color: white;
     text-align: center;
+    padding: 0.5rem 0;
 }
 
-#login-container input[type="text"],
-#login-container button {
-    width: 100%; /* Ajustar al 100% del contenedor */
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
-#login-container button {
-    background-color: #2196F3; /* Azul */
-    color: #ffffff; /* Texto blanco */
-    cursor: pointer;
+main {
+    max-width: 400px;
+    margin: 1rem auto;
+    padding: 0 1rem;
 }
 
-#app {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    display: none; /* Ocultar la aplicación al principio */
+.section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
 }
 
 textarea {
-    width: 97%;
-    height: 70px; /* Ajusta el tamaño del textarea para dejar espacio para el botón */
-    margin-bottom: 10px;
-    background-color: #1f1f1f; /* Fondo del área de texto */
-    color: #ffffff; /* Texto blanco */
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    resize: none; /* Evita que el área de texto sea redimensionable */
+    height: 60px;
+    resize: none;
 }
 
 button {
     background-color: #2196F3; /* Azul */
-    color: #ffffff; /* Texto blanco */
+    color: #ffffff;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #1976D2; /* Azul más oscuro al pasar el cursor */
+    background-color: #1976D2;
 }
 
 .post {
-    background-color: #0d47a1; /* Azul oscuro para las publicaciones */
-    border: 1px solid #1565c0; /* Borde de las cajas de publicaciones */
-    padding: 10px;
-    margin-bottom: 10px;
-    margin-top: 20px;
-    position: relative; /* Agregado para poder posicionar la marca de tiempo */
-    border-radius: 5px;
-    transition: opacity 0.5s ease; /* Transición de opacidad al aparecer una nueva publicación */
-    opacity: 0; /* Inicialmente invisible */
+    background-color: white;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.post.active {
-    opacity: 1; /* Hacer la publicación visible al aparecer */
+.post .content {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
 }
 
-.timestamp {
-    position: absolute;
-    bottom: 5px; /* Posicionamiento en la esquina inferior */
-    right: 5px; /* Posicionamiento en la esquina derecha */
-    color: #ffffff; /* Texto blanco */
+.post .author {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    font-weight: bold;
+    margin-bottom: 0.3rem;
 }
 
-.comments {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #1565c0; /* Añadir una línea de separación para los comentarios */
+.post .replies {
+    border-top: 1px solid var(--light-gray);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
-.comment {
-    background-color: #2e2e2e; /* Fondo del comentario */
-    margin-bottom: 10px;
-    padding-top: 1.5px;
-    padding-bottom: 0.5px;
-    padding-left: 10px;
-    border-radius: 5px;
+.post .replies div {
+    background-color: var(--background-color);
+    border-radius: 4px;
+    padding: 0.4rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
 }
 
-.comment .timestamp {
-    font-size: 0.8em;
-    color: #cccccc; /* Color más claro para la marca de tiempo del comentario */
+.post textarea {
+    height: 40px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    padding: 0.4rem;
+    font-size: 0.8rem;
 }
 
-
-
-/* Media query para dispositivos móviles */
-@media (max-width: 600px) {
-    .post {
-        padding-bottom: 80px; /* Espacio adicional para evitar la superposición */
-    }
-
-    .timestamp {
-        bottom: 45px; /* Ajuste la posición para dispositivos móviles */
-    }
-
-    input[type="text"], button {
-        width: calc(100% - 20px); /* Asegurar que los elementos de entrada y botón no se solapen con otros elementos */
-        margin: 5px 10px; /* Espaciado para los elementos de entrada y botón */
+@media (max-width: 450px) {
+    main {
+        padding: 0 0.5rem;
     }
 }
-
-.reactions {
-    display: flex; /* Mostrar los botones de reacción en línea */
-    align-items: center; /* Alinear verticalmente */
-}
-
-.reaction-button {
-    background-color: #2196F3; /* Azul */
-    color: #ffffff; /* Texto blanco */
-    border: none;
-    padding: 10px; /* Tamaño cuadrado */
-    width: auto; /* Permitir que el botón se ajuste al contenido */
-    height: auto; /* Permitir que el botón se ajuste al contenido */
-    border-radius: 5px; /* Añadir bordes redondeados */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-right: 5px; /* Añadir margen derecho */
-    display: inline-block; /* Mostrar como elemento en línea */
-}
-
-.reaction-button:hover {
-    background-color: #1976D2; /* Azul más oscuro al pasar el cursor */
-}
-
-.reaction-count {
-    color: #ffffff; /* Texto blanco */
-    margin-left: 5px; /* Añadir margen izquierdo */
-    display: inline-block; /* Mostrar como elemento en línea */
-    vertical-align: middle; /* Alinear verticalmente */
-}
-
