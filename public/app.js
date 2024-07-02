@@ -82,7 +82,9 @@ function createPost() {
             author: currentUser.username,
             content: content,
             timestamp: firebase.database.ServerValue.TIMESTAMP,
-            authorPic: currentUser.profilePic
+            authorPic: currentUser.profilePic,
+            likes: {},
+            likeCount: 0
         });
         document.getElementById('post-content').value = '';
     }
@@ -120,21 +122,25 @@ function renderPosts() {
         const postElement = document.createElement('div');
         postElement.className = 'post';
         const isVerified = post.author === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : '';
+        const isLiked = post.likes && post.likes[currentUser.username];
         postElement.innerHTML = `
             <div class="post-header">
                 <img src="${post.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="post-author-pic" onclick="showUserProfile('${post.author}')">
                 <div class="author" onclick="showUserProfile('${post.author}')">${post.author} ${isVerified}</div>
+                <button onclick="likePost('${post.id}')" class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                    👍🏿 <span class="like-count">${post.likeCount || 0}</span>
+                </button>
             </div>
             <div class="content">${post.content}</div>
-            <div class="post-actions">
-                <button onclick="likePost('${post.id}')" class="like-btn">👍🏿 <span class="like-count">${post.likes || 0}</span></button>
-            </div>
             <div class="replies">
                 ${post.replies ? Object.values(post.replies).map(reply => `
                     <div class="reply">
                         <div class="reply-header">
                             <img src="${reply.authorPic || 'default_profile_pic.png'}" alt="Foto de perfil" class="reply-author-pic" onclick="showUserProfile('${reply.author}')">
                             <strong onclick="showUserProfile('${reply.author}')">${reply.author}:</strong>
+                            <button onclick="likeReply('${post.id}', '${reply.id}')" class="like-btn ${reply.likes && reply.likes[currentUser.username] ? 'liked' : ''}" data-post-id="${post.id}" data-reply-id="${reply.id}">
+                                👍🏿 <span class="like-count">${reply.likeCount || 0}</span>
+                            </button>
                         </div>
                         <div>${reply.content}</div>
                     </div>
@@ -148,14 +154,46 @@ function renderPosts() {
 }
 
 function likePost(postId) {
-    const postRef = database.ref(`posts/${postId}/likes`);
-    postRef.transaction((currentLikes) => {
-        return (currentLikes || 0) + 1;
+    const postRef = database.ref(`posts/${postId}`);
+    postRef.transaction((post) => {
+        if (post) {
+            if (!post.likes) post.likes = {};
+            if (!post.likes[currentUser.username]) {
+                post.likes[currentUser.username] = true;
+                post.likeCount = (post.likeCount || 0) + 1;
+            } else {
+                delete post.likes[currentUser.username];
+                post.likeCount = (post.likeCount || 1) - 1;
+            }
+        }
+        return post;
     }).then(() => {
-        loadPosts(); // Recarga los posts para actualizar el contador de likes
+        loadPosts();
     }).catch((error) => {
-        console.error('Error al dar like:', error);
-        alert('Hubo un error al intentar dar like. Por favor, intenta de nuevo.');
+        console.error('Error al dar/quitar like:', error);
+        alert('Hubo un error. Por favor, intenta de nuevo.');
+    });
+}
+
+function likeReply(postId, replyId) {
+    const replyRef = database.ref(`posts/${postId}/replies/${replyId}`);
+    replyRef.transaction((reply) => {
+        if (reply) {
+            if (!reply.likes) reply.likes = {};
+            if (!reply.likes[currentUser.username]) {
+                reply.likes[currentUser.username] = true;
+                reply.likeCount = (reply.likeCount || 0) + 1;
+            } else {
+                delete reply.likes[currentUser.username];
+                reply.likeCount = (reply.likeCount || 1) - 1;
+            }
+        }
+        return reply;
+    }).then(() => {
+        loadPosts();
+    }).catch((error) => {
+        console.error('Error al dar/quitar like a la respuesta:', error);
+        alert('Hubo un error. Por favor, intenta de nuevo.');
     });
 }
 
@@ -174,29 +212,31 @@ function showContentSection() {
 }
 
 function showUserProfile(username) {
-    // Ocultar la sección de contenido principal
     document.getElementById('content-section').classList.add('hidden');
     
-    // Crear y mostrar la sección de perfil de usuario
     const profileSection = document.createElement('div');
     profileSection.id = 'profile-section';
     profileSection.className = 'section';
     
-    database.ref(`users/${username}`).once('value', (snapshot) => {
+    database.ref(`users/${username}`).on('value', (snapshot) => {
         const userData = snapshot.val();
+        const isFollowing = userData.followers && userData.followers[currentUser.username];
         profileSection.innerHTML = `
             <h2>${username}'s Profile ${username === 'Dito' ? '<span class="verified-badge" title="Creador de la plataforma">✅</span>' : ''}</h2>
             <img src="${userData.profilePic || 'default_profile_pic.png'}" alt="Foto de perfil" class="profile-pic">
             <p class="bio">${userData.bio || 'No hay biografía disponible.'}</p>
-            <p>Seguidores: ${userData.followers || 0}</p>
-            ${currentUser.username !== username ? `<button onclick="followUser('${username}')" class="small-btn">Seguir</button>` : `<button onclick="editProfile()" class="small-btn">Editar perfil</button>`}
+            <p>Seguidores: <span id="follower-count">${Object.keys(userData.followers || {}).length}</span></p>
+            ${currentUser.username !== username ? 
+                `<button onclick="toggleFollow('${username}')" class="small-btn" id="follow-btn">
+                    ${isFollowing ? 'Dejar de seguir' : 'Seguir'}
+                </button>` : 
+                ''}
             <button onclick="backToMainContent()" class="small-btn">Volver</button>
         `;
     });
     
     document.body.appendChild(profileSection);
 }
-
 function backToMainContent() {
     document.getElementById('profile-section').remove();
     document.getElementById('content-section').classList.remove('hidden');
@@ -266,6 +306,36 @@ function followUser(username) {
         console.error('Error al seguir al usuario:', error);
         alert('Hubo un error al intentar seguir al usuario. Por favor, intenta de nuevo.');
     });
+}
+
+function toggleFollow(username) {
+    const userRef = database.ref(`users/${username}/followers/${currentUser.username}`);
+    userRef.once('value')
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                // Si ya sigue, deja de seguir
+                return userRef.remove();
+            } else {
+                // Si no sigue, empieza a seguir
+                return userRef.set(true);
+            }
+        })
+        .then(() => {
+            // Actualiza el botón y el contador
+            const followBtn = document.getElementById('follow-btn');
+            const followerCount = document.getElementById('follower-count');
+            if (followBtn.textContent === 'Seguir') {
+                followBtn.textContent = 'Dejar de seguir';
+                followerCount.textContent = parseInt(followerCount.textContent) + 1;
+            } else {
+                followBtn.textContent = 'Seguir';
+                followerCount.textContent = parseInt(followerCount.textContent) - 1;
+            }
+        })
+        .catch((error) => {
+            console.error('Error al cambiar el estado de seguimiento:', error);
+            alert('Hubo un error. Por favor, intenta de nuevo.');
+        });
 }
 
 function approveUser(username) {
