@@ -78,7 +78,7 @@ function renderPosts() {
             <div class="replies">
                 ${post.replies ? Object.values(post.replies).map(reply => `<div><strong>${reply.author}:</strong> ${reply.content}</div>`).join('') : ''}
             </div>
-            <textarea id="reply-${post.id}" placeholder="Responder a este chirp"></textarea>
+            <textarea id="reply-${post.id}" placeholder="Responder a esta publicación"></textarea>
             <button onclick="createReply('${post.id}')">Responder</button>
         `;
         postsContainer.appendChild(postElement);
