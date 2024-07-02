@@ -25,7 +25,11 @@ function login() {
             const userData = snapshot.val();
             if (userData && userData.password === password) {
                 if (userData.status === 'approved') {
-                    currentUser = userData;
+                    currentUser = {
+                        username: userData.username,
+                        profilePic: userData.profilePic,
+                        // ... otros datos del usuario ...
+                    };
                     localStorage.setItem('username', username);
                     showContentSection();
                     loadPosts();
@@ -34,8 +38,6 @@ function login() {
                     }
                 } else if (userData.status === 'pending') {
                     alert('Tu solicitud de registro está pendiente de aprobación.');
-                } else {
-                    alert('Tu cuenta ha sido rechazada.');
                 }
             } else {
                 alert('Usuario o contraseña incorrectos');
@@ -161,7 +163,7 @@ function toggleAdminPanel() {
 }
 
 function loadUsers() {
-    database.ref('users').on('value', (snapshot) => {
+    database.ref('users').once('value', (snapshot) => {
         const existingUsers = document.getElementById('existing-users');
         const pendingUsers = document.getElementById('pending-users');
         existingUsers.innerHTML = '';
@@ -189,6 +191,7 @@ function loadUsers() {
 
                 pendingUsers.appendChild(li);
             }
+            // No hacemos nada con los usuarios rechazados, ya que serán eliminados
         });
     });
 }
@@ -198,7 +201,18 @@ function approveUser(username) {
 }
 
 function rejectUser(username) {
-    database.ref('users/' + username).update({ status: 'rejected' });
+    // Primero, eliminamos al usuario de la base de datos
+    database.ref('users/' + username).remove()
+        .then(() => {
+            console.log("Usuario rechazado y eliminado: " + username);
+            alert(`El usuario ${username} ha sido rechazado y eliminado de la base de datos.`);
+            // Actualizamos la lista de usuarios pendientes
+            loadUsers();
+        })
+        .catch((error) => {
+            console.error("Error al eliminar el usuario: ", error);
+            alert("Hubo un error al rechazar al usuario. Por favor, intenta de nuevo.");
+        });
 }
 
 function logout() {
