@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+#login-container, #chat-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+#login-container {
+    padding: 20px;
+    text-align: center;
+}
+
+#username-input, #message-input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    background-color: #383838;
+    color: #e0e0e0;
+}
+
+#login-button, #logout-button, #send-button {
+    padding: 10px 20px;
+    background-color: #075E54;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#chat-header {
+    background-color: #075E54;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#chat-header h2 {
+    margin: 0;
+}
+
+#users-list {
+    padding: 10px;
+    background-color: #262D31;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+#chat-messages {
+    height: 300px;
+    overflow-y: scroll;
+    padding: 20px;
+}
+
+#chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #2c2c2c;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+}
+
+.sent {
+    background-color: #056162;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.received {
+    background-color: #262D31;
+    align-self: flex-start;
+}
+
+#chat-messages::-webkit-scrollbar, #users-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-messages::-webkit-scrollbar-track, #users-list::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+#chat-messages::-webkit-scrollbar-thumb, #users-list::-webkit-scrollbar-thumb {
+    background-color: #4a4a4a;
+    border-radius: 4px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb:hover, #users-list::-webkit-scrollbar-thumb:hover {
+    background-color: #5a5a5a;
+}
+
+#username-input::placeholder, #message-input::placeholder {
+    color: #909090;
+}
+
+#login-button:hover, #logout-button:hover, #send-button:hover {
+    background-color: #128C7E;
+}
