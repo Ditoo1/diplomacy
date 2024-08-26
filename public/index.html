@@ -3,29 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Penasio</title>
+    <title>MusicApp</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div id="login-container">
-        <input type="text" id="username-input" placeholder="Ingresa tu nombre">
-        <button id="login-button">Ingresar</button>
+    <div class="container">
+        <h1>MusicApp</h1>
+        <div id="artist-feed" class="artist-feed"></div>
     </div>
-    <div id="chat-container" style="display: none;">
-        <div id="chat-header">
-            <h2>penasio</h2>
-            <button id="logout-button">Salir</button>
+
+    <div id="artist-page" class="artist-page hidden">
+        <button id="back-button" class="back-button">Volver</button>
+        <div id="artist-details"></div>
+    </div>
+
+    <div id="player" class="player">
+        <div class="player-info">
+            <img id="player-image" src="" alt="Album Cover" class="player-image">
+            <div>
+                <div id="player-track-name" class="player-track-name"></div>
+                <div id="player-artist-name" class="player-artist-name"></div>
+            </div>
         </div>
-        <div id="users-list"></div>
-        <div id="chat-messages"></div>
-        <div id="chat-input">
-            <input type="text" id="message-input" placeholder="Escribe un mensaje...">
-            <button id="send-button">Enviar</button>
+        <div class="player-controls">
+            <button id="play-pause-btn" class="player-button"><i class="fas fa-play"></i></button>
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
         </div>
+        <audio id="audio-player"></audio>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// Configuración de Firebase
+// Inicialización de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBFtJWTdqfS0MXCwWzFrHZNoqaCpHKXoC0",
     authDomain: "chat-fcc15.firebaseapp.com",
@@ -7,198 +7,214 @@ const firebaseConfig = {
     storageBucket: "chat-fcc15.appspot.com",
     messagingSenderId: "349866955859",
     appId: "1:349866955859:web:c166c2f9dd4a4aed01a2a6"
-  };
-  
-  // Inicializar Firebase
-  firebase.initializeApp(firebaseConfig);
-  
-  // Referencia a la base de datos
-  const database = firebase.database();
-  
-  // Elementos del DOM
-  const loginContainer = document.getElementById('login-container');
-  const chatContainer = document.getElementById('chat-container');
-  const usernameInput = document.getElementById('username-input');
-  const loginButton = document.getElementById('login-button');
-  const logoutButton = document.getElementById('logout-button');
-  const usersList = document.getElementById('users-list');
-  const chatMessages = document.getElementById('chat-messages');
-  const messageInput = document.getElementById('message-input');
-  const sendButton = document.getElementById('send-button');
-  
-  let currentUser = null;
-  let messagesRef;
-  let usersRef;
-  
-  const colors = [
-      '#4CAF50', '#FFC107', '#2196F3', '#E91E63', '#9C27B0',
-      '#00BCD4', '#FF5722', '#795548', '#607D8B', '#3F51B5'
-  ];
-  
-  let userColors = {};
-  
-  // Función para cargar el nombre de usuario guardado y iniciar sesión automáticamente
-  function loadSavedUser() {
-      const savedUsername = localStorage.getItem('chatUsername');
-      if (savedUsername) {
-          login(savedUsername);
-      }
-  }
-  
-  // Llamar a esta función cuando la página se carga
-  window.onload = loadSavedUser;
-  
-  // Función para iniciar sesión
-  function login(username) {
-      username = username || usernameInput.value.trim();
-      if (username) {
-          currentUser = username;
-          localStorage.setItem('chatUsername', username);
-          loginContainer.style.display = 'none';
-          chatContainer.style.display = 'block';
-          database.ref('users/' + username).set(true);
-          setupListeners();
-      }
-  }
-  
-  // Función para cerrar sesión
-  function logout() {
-      if (currentUser) {
-          database.ref('users/' + currentUser).remove();
-          currentUser = null;
-          localStorage.removeItem('chatUsername');
-          chatContainer.style.display = 'none';
-          loginContainer.style.display = 'block';
-          usernameInput.value = '';
-          removeListeners();
-          chatMessages.innerHTML = '';
-          usersList.innerHTML = '';
-      }
-  }
-  
-  // Función para configurar los listeners
-  function setupListeners() {
-      messagesRef = database.ref('messages');
-      usersRef = database.ref('users');
-      
-      messagesRef.on('child_added', addMessage);
-      usersRef.on('value', updateUsers);
-  }
-  
-  // Función para remover los listeners
-  function removeListeners() {
-      if (messagesRef) {
-          messagesRef.off('child_added', addMessage);
-      }
-      if (usersRef) {
-          usersRef.off('value', updateUsers);
-      }
-  }
-  
-  function updateUsers(snapshot) {
-      usersList.innerHTML = '';
-      const users = [];
-      snapshot.forEach((childSnapshot) => {
-          const user = childSnapshot.key;
-          users.push(user);
-          if (!userColors[user]) {
-              userColors[user] = colors[Math.floor(Math.random() * colors.length)];
-          }
-      });
-      usersList.textContent = users.join(', ');
-  }
-  
-  function addMessage(snapshot) {
-      const message = snapshot.val();
-      const messageElement = document.createElement('div');
-      messageElement.classList.add('message');
-      messageElement.classList.add(message.sender === currentUser ? 'sent' : 'received');
-      
-      const senderElement = document.createElement('span');
-      senderElement.classList.add('sender');
-      senderElement.style.color = userColors[message.sender] || '#ffffff';
-      senderElement.textContent = message.sender + ': ';
-      
-      const textElement = document.createElement('span');
-      textElement.innerHTML = formatMessage(message.text);
-      
-      messageElement.appendChild(senderElement);
-      messageElement.appendChild(textElement);
-      
-      chatMessages.appendChild(messageElement);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-  
-  function formatMessage(text) {
-      return text.replace(/@(\w+)/g, (match, username) => {
-          if (userColors[username]) {
-              return `<span class="mention" style="background-color: ${userColors[username]}40;">@${username}</span>`;
-          }
-          return match;
-      });
-  }
-  
-  function sendMessage() {
-      const message = messageInput.value.trim();
-      if (message !== '' && currentUser) {
-          database.ref('messages').push({
-              text: message,
-              sender: currentUser,
-              timestamp: firebase.database.ServerValue.TIMESTAMP
-          });
-          messageInput.value = '';
-      }
-  }
-  
-  // Eventos
-  loginButton.addEventListener('click', () => login());
-  logoutButton.addEventListener('click', logout);
-  sendButton.addEventListener('click', sendMessage);
-  messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-          sendMessage();
-      }
-  });
-  
-  usernameInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-          login();
-      }
-  });
-  
-  // Agregar autocompletado de menciones
-  messageInput.addEventListener('input', function() {
-      const cursorPosition = this.selectionStart;
-      const textBeforeCursor = this.value.slice(0, cursorPosition);
-      const match = textBeforeCursor.match(/@(\w*)$/);
-      
-      if (match) {
-          const partial = match[1].toLowerCase();
-          const matchingUsers = Object.keys(userColors).filter(user => 
-              user.toLowerCase().startsWith(partial) && user !== currentUser
-          );
-          
-          if (matchingUsers.length > 0) {
-              const autocompleteList = document.createElement('div');
-              autocompleteList.id = 'autocomplete';
-              matchingUsers.forEach(user => {
-                  const userElement = document.createElement('div');
-                  userElement.textContent = user;
-                  userElement.addEventListener('click', () => {
-                      this.value = this.value.slice(0, cursorPosition - match[1].length) + 
-                                   user + 
-                                   this.value.slice(cursorPosition);
-                      this.focus();
-                      autocompleteList.remove();
-                  });
-                  autocompleteList.appendChild(userElement);
-              });
-              document.body.appendChild(autocompleteList);
-          }
-      } else {
-          const existingAutocomplete = document.getElementById('autocomplete');
-          if (existingAutocomplete) {
-              existingAutocomplete.remove();
-          }
-      }
-  });
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const storage = firebase.storage();
+
+// Variables globales para gestionar el estado del reproductor
+let currentAudio = null;
+let currentTrackInfo = null;
+
+// Función para cargar los artistas desde la base de datos
+function loadArtists() {
+    const artistFeed = document.getElementById('artist-feed');
+    const artistsRef = database.ref('artists');
+
+    artistsRef.on('value', (snapshot) => {
+        artistFeed.innerHTML = '';
+        snapshot.forEach((childSnapshot) => {
+            const artist = childSnapshot.val();
+            const artistId = childSnapshot.key;
+            const artistCard = `
+                <div class="artist-card" data-artist-id="${artistId}">
+                    <img src="${artist.imageUrl}" alt="${artist.name}" class="artist-image">
+                    <h2>${artist.name}</h2>
+                    <p>${artist.genre}</p>
+                </div>
+            `;
+            artistFeed.innerHTML += artistCard;
+        });
+
+        // Añadir eventos a las tarjetas de los artistas
+        const artistCards = document.querySelectorAll('.artist-card');
+        artistCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const artistId = card.getAttribute('data-artist-id');
+                showArtistPage(artistId);
+            });
+        });
+    });
+}
+
+// Función para mostrar la página del artista y sus detalles
+function showArtistPage(artistId) {
+    const artistPage = document.getElementById('artist-page');
+    const artistDetails = document.getElementById('artist-details');
+    const artistsRef = database.ref('artists/' + artistId);
+
+    artistsRef.once('value', (snapshot) => {
+        const artist = snapshot.val();
+        let albumsHtml = '';
+        let allTracks = [];
+
+        Object.entries(artist.albums || {}).forEach(([albumId, album]) => {
+            let tracksHtml = '';
+            Object.entries(album.tracks || {}).forEach(([trackId, track]) => {
+                allTracks.push({...track, id: trackId, albumId: albumId});
+                tracksHtml += `
+                    <div class="track" onclick="playTrack('${artistId}', '${albumId}', '${trackId}', '${artist.name}', '${track.name}', '${album.coverUrl}')">
+                        <span class="track-number">${track.number}</span>
+                        <span>${track.name}</span>
+                        <span>(${track.listens || 0} escuchas)</span>
+                    </div>
+                `;
+            });
+
+            albumsHtml += `
+                <div class="album">
+                    <img src="${album.coverUrl}" alt="${album.title}" class="album-cover">
+                    <h3>${album.title}</h3>
+                    <p>${album.year}</p>
+                    ${tracksHtml}
+                </div>
+            `;
+        });
+
+        // Ordenar y mostrar las 5 canciones más escuchadas
+        allTracks.sort((a, b) => (b.listens || 0) - (a.listens || 0));
+        const topTracks = allTracks.slice(0, 5);
+
+        let topTracksHtml = '<h3>Top 5 Canciones</h3>';
+        topTracks.forEach((track, index) => {
+            topTracksHtml += `
+                <div class="track" onclick="playTrack('${artistId}', '${track.albumId}', '${track.id}', '${artist.name}', '${track.name}', '${artist.albums[track.albumId].coverUrl}')">
+                    <span class="track-number">${index + 1}</span>
+                    <span>${track.name}</span>
+                    <span>(${track.listens || 0} escuchas)</span>
+                </div>
+            `;
+        });
+
+        // Mostrar los detalles del artista, sus álbumes y las top canciones
+        artistDetails.innerHTML = `
+            <div class="artist-profile">
+                <img src="${artist.imageUrl}" alt="${artist.name}" class="artist-profile-image">
+                <div class="artist-info">
+                    <h2>${artist.name}</h2>
+                    <p>${artist.genre}</p>
+                    <p>${artist.biography}</p>
+                </div>
+            </div>
+            ${topTracksHtml}
+            <h3>Álbumes</h3>
+            ${albumsHtml}
+        `;
+
+        artistPage.classList.remove('hidden');
+    });
+}
+
+// Función para reproducir una pista seleccionada
+function playTrack(artistId, albumId, trackId, artistName, trackName, albumCover) {
+    // Detener la pista actual si hay una en reproducción
+    if (currentAudio) {
+        currentAudio.pause();
+    }
+
+    currentTrackInfo = { artistId, albumId, trackId };
+
+    const storageRef = storage.ref(`music/${artistId}/${albumId}/${trackId}.mp3`);
+    storageRef.getDownloadURL().then((url) => {
+        const audioPlayer = document.getElementById('audio-player');
+        audioPlayer.src = url;
+        audioPlayer.play().then(() => {
+            // Actualizar la interfaz del reproductor
+            document.getElementById('player-image').src = albumCover;
+            document.getElementById('player-track-name').textContent = trackName;
+            document.getElementById('player-artist-name').textContent = artistName;
+
+            currentAudio = audioPlayer;
+
+            updatePlayPauseButton();
+            startListenTimer();
+        }).catch((error) => {
+            console.error("Error en la reproducción:", error);
+        });
+    }).catch((error) => {
+        console.error("Error al obtener la URL de descarga:", error);
+    });
+}
+
+// Función para empezar a contar la reproducción de la pista (escuchas)
+function startListenTimer() {
+    if (currentTrackInfo) {
+        setTimeout(() => {
+            incrementListens(currentTrackInfo.artistId, currentTrackInfo.albumId, currentTrackInfo.trackId);
+        }, 10000);  // Aumentar escuchas después de 10 segundos
+    }
+}
+
+// Función para incrementar el número de escuchas de una pista
+function incrementListens(artistId, albumId, trackId) {
+    const trackRef = database.ref(`artists/${artistId}/albums/${albumId}/tracks/${trackId}/listens`);
+    trackRef.transaction((currentListens) => {
+        return (currentListens || 0) + 1;
+    });
+}
+
+// Configuración del botón de volver
+function setupBackButton() {
+    const backButton = document.getElementById('back-button');
+    const artistPage = document.getElementById('artist-page');
+
+    backButton.addEventListener('click', () => {
+        artistPage.classList.add('hidden');
+    });
+}
+
+// Configuración del reproductor de audio
+function setupAudioPlayer() {
+    const audioPlayer = document.getElementById('audio-player');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const progressBar = document.getElementById('progress');
+
+    playPauseBtn.addEventListener('click', togglePlayPause);
+
+    audioPlayer.addEventListener('timeupdate', () => {
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.style.width = `${progress}%`;
+    });
+
+    audioPlayer.addEventListener('ended', () => {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    });
+}
+
+// Función para alternar entre play y pause
+function togglePlayPause() {
+    const audioPlayer = document.getElementById('audio-player');
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+    } else {
+        audioPlayer.pause();
+    }
+    updatePlayPauseButton();
+}
+
+// Función para actualizar el botón de play/pause
+function updatePlayPauseButton() {
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const audioPlayer = document.getElementById('audio-player');
+    if (audioPlayer.paused) {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    } else {
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    }
+}
+
+// Inicializar la aplicación
+loadArtists();
+setupBackButton();
+setupAudioPlayer();
