@@ -1,179 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #fff;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.artist-feed {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.artist-card {
-    background-color: #181818;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.artist-card:hover {
-    background-color: #282828;
-}
-
-.artist-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-.artist-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 80px;
     background-color: #121212;
-    overflow-y: auto;
+    color: #ffffff;
+}
+
+
+
+
+#login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    text-align: center;
     padding: 20px;
 }
 
-.hidden {
+h3 {
+    color: #5f5f5f;
+    font-style: italic;
+}
+
+#login-container input[type="text"],
+#login-container input[type="password"],
+#login-container button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+}
+
+#login-container button {
+    background-color: #2196F3;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+#app {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
     display: none;
 }
 
-.back-button {
-    background-color: #1DB954;
-    color: white;
+textarea {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    resize: none;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #2196F3;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
-.artist-profile {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
+button:hover {
+    background-color: #1976D2;
 }
 
-.artist-profile-image {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 30px;
+.post {
+    background-color: #0d47a1;
+    border: 1px solid #1565c0;
+    padding: 15px;
+    margin-top: 20px;
+    position: relative;
+    border-radius: 5px;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    word-wrap: break-word;
 }
 
-.artist-info {
-    flex-grow: 1;
+.post.active {
+    opacity: 1;
 }
 
-.album {
-    background-color: #181818;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
+.timestamp {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    font-size: 0.75em;
+    color: #cccccc;
 }
 
-.album-cover {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+.comments {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #1565c0;
+}
+
+.comment {
+    background-color: #2e2e2e;
     margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 5px;
 }
 
-.track {
+.comment .timestamp,
+.comment-timestamp {
+    font-size: 0.75em;
+    color: #bbbbbb;
+}
+
+.reactions {
     display: flex;
     align-items: center;
-    padding: 10px;
-    background-color: #282828;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    cursor: pointer;
+    margin-top: 10px;
 }
 
-.track:hover {
-    background-color: #383838;
-}
-
-.track-number {
-    margin-right: 20px;
-}
-
-.player {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background-color: #282828;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-}
-
-.player-info {
-    display: flex;
-    align-items: center;
-    width: 30%;
-}
-
-.player-image {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    margin-right: 15px;
-}
-
-.player-track-name {
-    font-weight: bold;
-}
-
-.player-artist-name {
-    font-size: 0.9em;
-    color: #b3b3b3;
-}
-
-.player-controls {
-    display: flex;
-    align-items: center;
-    width: 70%;
-}
-
-.player-button {
-    background: none;
+.reaction-button {
+    background-color: #2196F3;
+    color: #ffffff;
     border: none;
-    color: white;
-    font-size: 24px;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-right: 20px;
+    transition: background-color 0.3s ease;
+    margin-right: 8px;
 }
 
-.progress-bar {
-    flex-grow: 1;
-    height: 4px;
-    background-color: #535353;
-    border-radius: 2px;
-    overflow: hidden;
+.reaction-button:hover {
+    background-color: #1976D2;
 }
 
-.progress {
-    width: 0;
-    height: 100%;
-    background-color: #1DB954;
-    transition: width 0.1s linear;
+.reaction-count {
+    font-weight: bold;
+    color: #ffffff;
 }
+
+input {
+    color: #000000;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-style: italic;
+}
+
+input::placeholder {
+    color: #aaaaaa;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    #login-container, #app {
+        padding: 10px;
+    }
+
+    .post {
+        padding: 15px;
+    }
+
+    .timestamp {
+        font-size: 0.7em;
+    }
+
+    .reaction-button {
+        padding: 6px 10px;
+        font-size: 0.9em;
+    }
+
+    textarea {
+        height: 70px;
+    }
+}
+

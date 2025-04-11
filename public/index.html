@@ -1,43 +1,33 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUCIFY</title>
+    <title>NIÇHAT</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>AUCIFY</h1>
-        <div id="artist-feed" class="artist-feed"></div>
+    <div id="login-container">
+        <h2 type="start">¿Cómo deseas que te conozcamos?</h2>
+        <h3 type="second">Introduce un nombre y contraseña nuevos o válidos</h3>
+        <input type="text" id="usernameInput" placeholder="Nombre de usuario">
+        <input type="password" id="passwordInput" placeholder="Contraseña" minlength="6">
+        <button onclick="login()">Entrar</button>
     </div>
-
-    <div id="artist-page" class="artist-page hidden">
-        <button id="back-button" class="back-button">Volver</button>
-        <div id="artist-details"></div>
-    </div>
-
-    <div id="player" class="player">
-        <div class="player-info">
-            <img id="player-image" src="" alt="Album Cover" class="player-image">
-            <div>
-                <div id="player-track-name" class="player-track-name"></div>
-                <div id="player-artist-name" class="player-artist-name"></div>
-            </div>
+    
+    <div id="app" style="display:none;">
+        <div id="userInfo">
+            <span id="loggedInUser"></span>
+            <button onclick="logout()">Cerrar sesión</button>
         </div>
-        <div class="player-controls">
-            <button id="play-pause-btn" class="player-button"><i class="fas fa-play"></i></button>
-            <div class="progress-bar">
-                <div id="progress" class="progress"></div>
-            </div>
-        </div>
-        <audio id="audio-player"></audio>
-    </div>
+        <h1>NIÇHAT</h1>
+        <textarea id="postInput" placeholder="Que piensas contarnos?"></textarea>
+        <button onclick="post()">Postear</button>
+        <div id="posts"></div>
+    </div>    
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
