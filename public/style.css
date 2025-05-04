@@ -7,10 +7,10 @@
     --bot-msg: #424242;
     --accent: #bb86fc;
     --modal-bg: #1e1e1e;
-}
-
-/* Modo claro (sobrescribe variables) */
-.light-mode {
+    --mention-color: #4dabf7;
+  }
+  
+  .light-mode {
     --bg-color: #f5f5f5;
     --text-color: #333;
     --header-bg: #6200ea;
@@ -19,9 +19,10 @@
     --bot-msg: #fff;
     --accent: #6200ea;
     --modal-bg: #fff;
-}
-
-body {
+    --mention-color: #1976d2;
+  }
+  
+  body {
     font-family: 'Roboto', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -32,10 +33,9 @@ body {
     justify-content: center;
     align-items: center;
     transition: background 0.3s, color 0.3s;
-}
-
-/* Modal de usuario */
-.modal {
+  }
+  
+  .modal {
     display: flex;
     position: fixed;
     top: 0;
@@ -46,18 +46,18 @@ body {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-}
-
-.modal-content {
+  }
+  
+  .modal-content {
     background: var(--modal-bg);
     padding: 2rem;
     border-radius: 10px;
     width: 90%;
     max-width: 400px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.modal-content input {
+  }
+  
+  .modal-content input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
@@ -65,9 +65,9 @@ body {
     color: var(--text-color);
     border: 1px solid #444;
     border-radius: 5px;
-}
-
-.modal-content button {
+  }
+  
+  .modal-content button {
     width: 100%;
     padding: 10px;
     background: var(--accent);
@@ -75,36 +75,35 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-/* Chat container */
-.chat-container {
+  }
+  
+  .chat-container {
     width: 90%;
     max-width: 800px;
     height: 80vh;
     background: var(--header-bg);
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    display: none; /* Oculto hasta que elija nombre */
+    display: none;
     flex-direction: column;
     overflow: hidden;
-}
-
-header {
+  }
+  
+  header {
     background: var(--header-bg);
     color: white;
     padding: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.header-controls {
+  }
+  
+  .header-controls {
     display: flex;
     gap: 10px;
-}
-
-#toggle-theme, #logout {
+  }
+  
+  #toggle-theme, #logout {
     background: transparent;
     border: 1px solid var(--accent);
     color: var(--accent);
@@ -112,56 +111,62 @@ header {
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s;
-}
-
-#toggle-theme:hover, #logout:hover {
+  }
+  
+  #toggle-theme:hover, #logout:hover {
     background: var(--accent);
     color: white;
-}
-
-.chat-box {
+  }
+  
+  .chat-box {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
     background: var(--bg-color);
-}
-
-.message {
+  }
+  
+  .message {
     margin-bottom: 15px;
     padding: 10px 15px;
     border-radius: 10px;
     max-width: 70%;
     word-wrap: break-word;
     color: var(--text-color);
-}
-
-.user-message {
+  }
+  
+  .user-message {
     background: var(--user-msg);
     margin-left: auto;
     border-bottom-right-radius: 0;
-}
-
-.bot-message {
+  }
+  
+  .bot-message {
     background: var(--bot-msg);
     margin-right: auto;
     border-bottom-left-radius: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.message-sender {
+  }
+  
+  .message-sender {
     font-weight: bold;
     color: var(--accent);
     margin-bottom: 5px;
-}
-
-.input-area {
+  }
+  
+  .mention {
+    color: var(--mention-color);
+    font-weight: bold;
+  }
+  
+  .input-area {
     display: flex;
     padding: 15px;
     background: var(--header-bg);
     border-top: 1px solid #444;
-}
-
-#user-input {
+    position: relative;
+  }
+  
+  #user-input {
     flex: 1;
     padding: 10px;
     background: var(--input-bg);
@@ -170,9 +175,9 @@ header {
     border-radius: 5px;
     resize: none;
     height: 50px;
-}
-
-#send-button {
+  }
+  
+  #send-button {
     background: var(--accent);
     color: white;
     border: none;
@@ -180,4 +185,35 @@ header {
     margin-left: 10px;
     border-radius: 5px;
     cursor: pointer;
-}
+  }
+  
+  .mention-autocomplete {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    z-index: 100;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mention-autocomplete ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .mention-autocomplete li {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-color);
+  }
+  
+  .mention-autocomplete li:hover, .mention-autocomplete li.selected {
+    background: var(--accent);
+    color: white;
+  }

@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Comunitario OSCURO</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Chat Comunitario</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Modal de nombre de usuario -->
+    <!-- Modal de usuario -->
     <div id="username-modal" class="modal">
         <div class="modal-content">
             <h2>👋 ¡Bienvenido al chat!</h2>
             <p>Elige un nombre para participar:</p>
-            <input type="text" id="modal-username-input" placeholder="Tu nombre único" autofocus>
+            <input type="text" id="username-input" placeholder="Tu nombre único" autofocus>
             <button id="modal-submit">Entrar al chat</button>
         </div>
     </div>
@@ -30,6 +30,11 @@
 
         <div class="chat-box" id="chat-box"></div>
 
+        <!-- Área de autocompletado -->
+        <div class="mention-autocomplete" id="mention-autocomplete">
+            <ul id="mention-list"></ul>
+        </div>
+
         <div class="input-area">
             <textarea id="user-input" placeholder="Escribe tu mensaje..."></textarea>
             <button id="send-button">Enviar</button>
@@ -37,8 +42,8 @@
     </div>
 
     <!-- Firebase y scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
